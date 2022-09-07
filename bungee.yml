@@ -1,0 +1,5 @@
+name: BonusMalusController
+main: main.java.me.avankziar.bmc.bungee.BMC
+version: 1
+author: Avankziar
+softDepends: [InterfaceHub, RootAdministration]
