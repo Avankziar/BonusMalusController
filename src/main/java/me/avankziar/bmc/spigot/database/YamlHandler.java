@@ -64,6 +64,7 @@ public class YamlHandler
 		return yaml;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private boolean writeFile(File file, YamlConfiguration yml, LinkedHashMap<String, Language> keyMap)
 	{
 		yml.options().header("For more explanation see \n Your pluginsite");
@@ -168,7 +169,7 @@ public class YamlHandler
 			try(InputStream in = plugin.getResource("default.yml"))
 			{
 				//Erstellung einer "leere" config.yml
-				Files.copy(in, config.toPath());
+				Files.copy(in, commands.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -208,14 +209,6 @@ public class YamlHandler
 		{
 			return false;
 		}
-		/*
-		 * Here a example to create multiple flatfile for one purpose.
-		 * This example is been using for inventory-guis.
-		 */
-		if(!mkdirGUIs())
-		{
-			return false;
-		}
 		return true;
 	}
 	
@@ -242,7 +235,7 @@ public class YamlHandler
 			BMC.log.info("Create %lang%.yml...".replace("%lang%", languageString));
 			try(InputStream in = plugin.getResource("default.yml"))
 			{
-				Files.copy(in, config.toPath());
+				Files.copy(in, language.toPath());
 			} catch (IOException e)
 			{
 				e.printStackTrace();
@@ -254,12 +247,6 @@ public class YamlHandler
 			return false;
 		}
 		writeFile(language, lang, plugin.getYamlManager().getLanguageKey());
-		return true;
-	}
-	
-	private boolean mkdirGUIs()
-	{
-		
 		return true;
 	}
 }

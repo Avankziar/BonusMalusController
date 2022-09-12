@@ -4,4 +4,5 @@ version: 1
 author: Avankziar
 api-version: 1.17
 description: A plugin to control and manage all bonus and malus for all kind of types.
-softdepend: [InterfaceHub]
+depend: [InterfaceHub]
+website: TBA

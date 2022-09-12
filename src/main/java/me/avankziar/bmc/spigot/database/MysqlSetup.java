@@ -136,11 +136,11 @@ public class MysqlSetup
 	{
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.BONUSMALUS.getValue()
 		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-		+ " bonusmalusname text NOT NULL UNIQUE,"
-		+ " diplayname text NOT NULL,"
-		+ " isbooleanbonus boolean,"
-		+ " bonusmalustype text,"
-		+ " multiplicationcalculationtype text,"
+		+ " bonus_malus_name text NOT NULL,"
+		+ " display_name text NOT NULL,"
+		+ " is_boolean_bonus boolean,"
+		+ " bonus_malus_type text,"
+		+ " multiplication_calculation_type text,"
 		+ " explanation LONGTEXT);";
 		baseSetup(data);
 		return true;
@@ -150,10 +150,10 @@ public class MysqlSetup
 	{
 		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.BONUSMALUSVALUE.getValue()
 		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
-		+ " player_uuid char(36) NOT NULL UNIQUE,"
-		+ " bonusmalusname text NOT NULL UNIQUE,"
-		+ " bonusmalusvaluetype text,"
-		+ " bmvalue double NOT NULL,"
+		+ " player_uuid char(36) NOT NULL,"
+		+ " bonus_malus_name text NOT NULL,"
+		+ " bonus_malus_value_type text,"
+		+ " bonus_malus_value double NOT NULL,"
 		+ " reason text,"
 		+ " server text,"
 		+ " world text,"

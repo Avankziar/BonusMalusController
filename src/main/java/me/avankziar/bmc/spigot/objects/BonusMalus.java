@@ -109,8 +109,11 @@ public class BonusMalus implements MysqlHandable
 		try
 		{
 			String sql = "INSERT INTO `" + tablename
-					+ "`(`bonusmalusname`, `diplayname`, `isbooleanbonus`, `bonusmalustype`, `multiplicationcalculationtype`, `explanation`) " 
-					+ "VALUES(?, ?, ?, ?)";
+					+ "`(`bonus_malus_name`, `display_name`, `is_boolean_bonus`,"
+					+ " `bonus_malus_type`, `multiplication_calculation_type`, `explanation`) " 
+					+ "VALUES("
+					+ "?, ?, ?, "
+					+ "?, ?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, bonusMalusName);
 	        ps.setString(2, displayBonusMalusName);
@@ -134,7 +137,7 @@ public class BonusMalus implements MysqlHandable
 		try
 		{
 			String sql = "UPDATE `" + tablename
-				+ "` SET `bonusmalusname` = ?, `diplayname` = ?, `isbooleanbonus` = ?, `bonusmalustype` = ?,"
+				+ "` SET `bonus_malus_name` = ?, `display_name` = ?, `is_boolean_bonus` = ?, `bonus_malus_type` = ?,"
 				+ " `multiplicationcalculationtype` = ?, `explanation` = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -182,11 +185,11 @@ public class BonusMalus implements MysqlHandable
 			while (rs.next()) 
 			{
 				al.add(
-						new BonusMalus(rs.getString("bonusmalusname"),
-						rs.getString("diplayname"),
-						rs.getBoolean("isbooleanbonus"),
-						BonusMalusType.valueOf(rs.getString("bonusmalustype")),
-						MultiplicationCalculationType.valueOf(rs.getString("multiplicationcalculationtype")),
+						new BonusMalus(rs.getString("bonus_malus_name"),
+						rs.getString("display_name"),
+						rs.getBoolean("is_boolean_bonus"),
+						BonusMalusType.valueOf(rs.getString("bonus_malus_type")),
+						MultiplicationCalculationType.valueOf(rs.getString("multiplication_calculation_type")),
 						rs.getString("explanation").split("~!~")));
 			}
 			return al;

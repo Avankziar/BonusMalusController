@@ -120,7 +120,7 @@ public class TimeHandler
 			{
 				min += String.valueOf(0);
 			}
-			min += String.valueOf(m)+":";
+			min += String.valueOf(m);
 		}
 		String sec = "";
 		if(timeformat.contains("ss"))

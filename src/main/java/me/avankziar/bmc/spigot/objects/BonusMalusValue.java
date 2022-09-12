@@ -150,9 +150,11 @@ public class BonusMalusValue implements MysqlHandable
 		try
 		{
 			String sql = "INSERT INTO `" + tablename
-					+ "`(`player_uuid`, `bonusmalusname`, `bonusmalusvaluetype`, `bmvalue`, `reason`,"
+					+ "`(`player_uuid`, `bonus_malus_name`, `bonus_malus_value_type`, `bonus_malus_value`, `reason`,"
 					+ " `server`, `world`, `duration`) " 
-					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "VALUES("
+					+ "?, ?, ?, ?, ?, "
+					+ "?, ?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, uuid.toString());
 	        ps.setString(2, bonusMalusName);
@@ -178,7 +180,7 @@ public class BonusMalusValue implements MysqlHandable
 		try
 		{
 			String sql = "UPDATE `" + tablename
-				+ "` SET `player_uuid` = ?, `bonusmalusname` = ?, `bonusmalusvaluetype` = ?, `bmvalue` = ?, `reason` = ?,"
+				+ "` SET `player_uuid` = ?, `bonus_malus_name` = ?, `bonus_malus_value_type` = ?, `bonus_malus_value` = ?, `reason` = ?,"
 				+ " `server` = ?, `world` = ?, `duration` = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -230,9 +232,9 @@ public class BonusMalusValue implements MysqlHandable
 						new BonusMalusValue(
 								rs.getInt("id"),
 								UUID.fromString(rs.getString("player_uuid")),
-								rs.getString("bonusmalusname"),
-								BonusMalusValueType.valueOf(rs.getString("bonusmalusvaluetype")),
-								rs.getDouble("bmvalue"),
+								rs.getString("bonus_malus_name"),
+								BonusMalusValueType.valueOf(rs.getString("bonus_malus_value_type")),
+								rs.getDouble("bonus_malus_value"),
 								rs.getString("reason"),
 								rs.getString("server"),
 								rs.getString("world"),

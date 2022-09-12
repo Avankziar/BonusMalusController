@@ -1,6 +1,5 @@
 package main.java.me.avankziar.bmc.spigot;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,8 +19,11 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.bmc.spigot.assistance.BackgroundTask;
+import main.java.me.avankziar.bmc.spigot.cmd.BMCAddCmdExecutor;
+import main.java.me.avankziar.bmc.spigot.cmd.BMCBoniCmdExecutor;
 import main.java.me.avankziar.bmc.spigot.cmd.BMCCmdExecutor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.bmc.spigot.cmdtree.BaseConstructor;
@@ -37,6 +39,7 @@ import main.java.me.avankziar.bmc.spigot.permission.Bypass;
 import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusType;
 import main.java.me.avankziar.ifh.general.bonusmalus.MultiplicationCalculationType;
 import main.java.me.avankziar.ifh.spigot.administration.Administration;
+import main.java.me.avankziar.ifh.spigot.metrics.Metrics;
 
 public class BMC extends JavaPlugin
 {
@@ -52,6 +55,8 @@ public class BMC extends JavaPlugin
 	private ArrayList<BaseConstructor> helpList = new ArrayList<>();
 	private ArrayList<CommandConstructor> commandTree = new ArrayList<>();
 	private LinkedHashMap<String, ArgumentModule> argumentMap = new LinkedHashMap<>();
+	
+	public static String infoCommand = "/";
 	
 	public Administration rootAConsumer;
 	public BonusMalusProvider bmProvider;
@@ -73,7 +78,11 @@ public class BMC extends JavaPlugin
 		
 		yamlHandler = new YamlHandler(plugin);
 		
-		if (yamlHandler.getConfig().getBoolean("Mysql.Status", false) == true)
+		String path = plugin.getYamlHandler().getConfig().getString("IFHAdministrationPath");
+		boolean adm = plugin.getAdministration() != null 
+				&& plugin.getYamlHandler().getConfig().getBoolean("useIFHAdministration")
+				&& plugin.getAdministration().isMysqlPathActive(path);
+		if(adm || yamlHandler.getConfig().getBoolean("Mysql.Status", false) == true)
 		{
 			mysqlHandler = new MysqlHandler(plugin);
 			mysqlSetup = new MysqlSetup(plugin);
@@ -90,6 +99,7 @@ public class BMC extends JavaPlugin
 		setupCommandTree();
 		setupListeners();
 		setupIFHProvider();
+		setupBstats();
 	}
 	
 	public void onDisable()
@@ -134,11 +144,27 @@ public class BMC extends JavaPlugin
 		return backgroundTask;
 	}
 	
+	public String getServername()
+	{
+		return getPlugin().getAdministration() != null ? getPlugin().getAdministration().getSpigotServerName() 
+				: getPlugin().getYamlHandler().getConfig().getString("ServerName");
+	}
+	
 	private void setupCommandTree()
 	{		
+		infoCommand += plugin.getYamlHandler().getCommands().getString("bmc.Name");
+		
 		CommandConstructor bmc = new CommandConstructor(CommandExecuteType.BMC, "bmc", false);
 		registerCommand(bmc.getPath(), bmc.getName());
 		getCommand(bmc.getName()).setExecutor(new BMCCmdExecutor(plugin, bmc));
+		
+		CommandConstructor bmcboni = new CommandConstructor(CommandExecuteType.BMCBONI, "bmcboni", false);
+		registerCommand(bmcboni.getPath(), bmcboni.getName());
+		getCommand(bmcboni.getName()).setExecutor(new BMCBoniCmdExecutor(plugin, bmcboni));
+		
+		CommandConstructor bmcadd = new CommandConstructor(CommandExecuteType.BMCADD, "bmcadd", true);
+		registerCommand(bmcadd.getPath(), bmcadd.getName());
+		getCommand(bmcadd.getName()).setExecutor(new BMCAddCmdExecutor(plugin, bmcadd));
 	}
 	
 	public void setupBypassPerm()
@@ -278,25 +304,6 @@ public class BMC extends JavaPlugin
 		pm.registerEvents(new JoinQuitListener(plugin), plugin);
 	}
 	
-	public boolean reload() throws IOException
-	{
-		if(!yamlHandler.loadYamlHandler())
-		{
-			return false;
-		}
-		if(yamlHandler.getConfig().getBoolean("Mysql.Status", false))
-		{
-			if(!mysqlSetup.loadMysqlSetup())
-			{
-				return false;
-			}
-		} else
-		{
-			return false;
-		}
-		return true;
-	}
-	
 	private boolean setupIFHProvider()
 	{
 		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
@@ -312,7 +319,6 @@ public class BMC extends JavaPlugin
         this,
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> BonusMalus.class is provided!");
-    	bmProvider.init();
     	for(BaseConstructor bc : getCommandHelpList())
 		{
 			if(!bc.isPutUpCmdPermToBonusMalusSystem())
@@ -326,11 +332,20 @@ public class BMC extends JavaPlugin
 			String[] ex = {plugin.getYamlHandler().getCommands().getString(bc.getPath()+".Explanation")};
 			bmProvider.register(
 					pluginName.toLowerCase()+":"+bc.getPath(),
-					plugin.getYamlHandler().getCommands().getString(bc.getPath()+".", "Command "+bc.getName()),
+					plugin.getYamlHandler().getCommands().getString(bc.getPath()+".Displayname", "Command "+bc.getName()),
 					true,
 					BonusMalusType.UP, MultiplicationCalculationType.MULTIPLICATION,
 					ex);
 		}
+    	new BukkitRunnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				bmProvider.init();
+			}
+		}.runTaskLaterAsynchronously(plugin, 20L*10);
 		return false;
 	}
 	
@@ -338,7 +353,7 @@ public class BMC extends JavaPlugin
 	{
 		return bmProvider;
 	}
-	
+
 	private void setupIFHAdministration()
 	{ 
 		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
@@ -358,5 +373,11 @@ public class BMC extends JavaPlugin
 	public Administration getAdministration()
 	{
 		return rootAConsumer;
+	}
+	
+	public void setupBstats()
+	{
+		int pluginId = 16373; //Bungee 16374
+        new Metrics(this, pluginId);
 	}
 }

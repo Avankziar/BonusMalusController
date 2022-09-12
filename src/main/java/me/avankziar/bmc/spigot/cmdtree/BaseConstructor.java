@@ -23,9 +23,9 @@ public class BaseConstructor
 		setCommandString(commandString);
 		setHelpInfo(helpInfo);
 		setCanConsoleAccess(canConsoleAccess);
+		setPutUpCmdPermToBonusMalusSystem(putUpCmdPermToBonusMalusSystem);
 		CommandSuggest.set(cet, commandString);
 		getPlugin().addingCommandHelps(this);
-		setPutUpCmdPermToBonusMalusSystem(putUpCmdPermToBonusMalusSystem);
 	}
 	
 	public static BMC getPlugin()

@@ -162,12 +162,28 @@ public class YamlManager
 		String path = "";
 		commandsInput("bmc", "bmc", "bmc.cmd.bmc", 
 				"/bmc [page] [playername] [global/server/world]", "/bmc ", false,
-				"&c/bmc [Seite] [Spielername] [global/server/world] &f| Listet alle aktiven Boni/Mali des Spielers mit Hovererklärung auf.",
-				"&c/bmc [page] [playername] [global/server/world] &f| Lists all active bonuses/maluses of the player with hoverexplanation.",
+				"&c/bmc [Seite] [Spielername] [global/server/world] &f| Infoseite für alle Befehle.",
+				"&c/bmc [page] [playername] [global/server/world] &f| Info page for all commands.",
 				"&bBefehlsrecht für &f/bmc",
 				"&bCommandright for &f/bmc",
+				"&eInfoseite für alle Befehle.",
+				"&eInfo page for all commands.");
+		commandsInput("bmcboni", "bmcboni", "bmc.cmd.bmcboni", 
+				"/bmcboni [page] [playername] [global/server/world]", "/bmcboni ", false,
+				"&c/bmcboni [Seite] [Spielername] [global/server/world] &f| Listet alle aktiven Boni/Mali des Spielers mit Hovererklärung auf.",
+				"&c/bmcboni [page] [playername] [global/server/world] &f| Lists all active bonuses/maluses of the player with hoverexplanation.",
+				"&bBefehlsrecht für &f/bmcboni",
+				"&bCommandright for &f/bmcboni",
 				"&eListet alle aktiven Boni/Mali des Spielers mit Hovererklärung auf.",
 				"&eLists all active bonuses/maluses of the player with hoverexplanation.");
+		commandsInput("bmcadd", "bmcadd", "bmc.cmd.bmcadd", 
+				"/bmcadd <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...>", "/bmcadd ", false,
+				"&c/bmcadd <BonusMalus> <Spieler> <global/server:servername/world:servername:weltname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <Grund...> &f| Fügt dem angegeben Spieler einen Bonus/Malus hinzu.",
+				"&c/bmcadd <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...> &f| Adds a bonus/penalty to the specified player.",
+				"&bBefehlsrecht für &f/bmcadd",
+				"&bCommandright for &f/bmcadd",
+				"&eFügt dem angegeben Spieler einen Bonus/Malus hinzu.",
+				"&eAdds a bonus/penalty to the specified player.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -288,11 +304,27 @@ public class YamlManager
 						"&6Erklärungshover"}));
 		languageKeys.put("Cmd.True", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&e✔",
-						"&e✔"}));
+						"&a✔",
+						"&a✔"}));
 		languageKeys.put("Cmd.False", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&c✖",
 						"&c✖"}));
+		languageKeys.put("Cmd.BaseValue", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&#fc9303BaseWert: &r%value%",
+						"&#fc9303Basevalue: &r%value%"}));
+		languageKeys.put("CmdAdd.IsNotRegistered", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&cDer Bonus/Malus ist nicht registriert!",
+						"&cThe bonus/malus is not registered!"}));
+		languageKeys.put("CmdAdd.AddedPermanent", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDer Spieler &f%player% &ehat permanent den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %reason%",
+						"&eThe player &f%player% &ehas permanently received the bonus/penalty &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %reason%"}));
+		languageKeys.put("CmdAdd.AddedTemporary", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDer Spieler &f%player% &ehat den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %duration% | %reason%",
+						"&eThe player &f%player% &ehas received the bonus/malus &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %duration% | %reason%"}));
 	}
 }

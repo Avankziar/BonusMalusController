@@ -35,7 +35,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	public void init()
 	{
 		ArrayList<BonusMalus> bmlist = BonusMalus.convert(plugin.getMysqlHandler()
-				.getFullList(MysqlHandler.Type.BONUSMALUS, "`bonusmalusname`", "id > 0"));
+				.getFullList(MysqlHandler.Type.BONUSMALUS, "`bonus_malus_name`", "id > 0"));
 		registeredBM.addAll(bmlist);
 	}
 	
@@ -59,8 +59,8 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			String bms = bmv.getBonusMalusName();
 			bmvl.add(bms);
 			BonusMalus bm = (BonusMalus) plugin.getMysqlHandler().getData(MysqlHandler.Type.BONUSMALUS,
-					"`bonusmalusname` = ?", uuid.toString(), bms);
-			boolean isAdd = bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION;
+					"`bonus_malus_name` = ?", uuid.toString(), bms);
+			boolean isAdd = bm != null ? bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION : true;
 			if(bmv.getDuration() > 0 && bmv.getDuration() < now)
 			{
 				plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE, "`id` = ?", bmv.getID());
@@ -147,7 +147,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 				{
 					d += bmPerUUIDPerServerPerWorldSUM.get(uuid).get(world).containsKey(bonusMalusName)
 							? bmPerUUIDPerServerPerWorldSUM.get(uuid).get(world).get(bonusMalusName) : 0;
-				}				
+				}			
 			}
 			d += bmPerUUIDPerServerSUM.containsKey(uuid) ?
 					(bmPerUUIDPerServerSUM.get(uuid).containsKey(bonusMalusName) ? bmPerUUIDPerServerSUM.get(uuid).get(bonusMalusName) : 0)
@@ -161,8 +161,16 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	
 	private double getMulValue(UUID uuid, String bonusMalusName, String server, String world)
 	{
-		BonusMalus bm = registeredBM.stream().filter(b -> bonusMalusName.equals(b.getBonusMalusName())).findFirst().orElse(null);
-		double d = 0.0;
+		BonusMalus bm = null;//registeredBM.stream().filter(b -> bonusMalusName.equals(b.getBonusMalusName())).findFirst().orElse(null);
+		for(BonusMalus b : registeredBM)
+		{
+			if(bonusMalusName.equals(b.getBonusMalusName()))
+			{
+				bm = b;
+				break;
+			}
+		}
+		double d = (bm != null && bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION) ? 0.0 : 1;
 		if(server != null)
 		{
 			if(world != null)
@@ -203,13 +211,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 				d *= bmPerUUIDMUL.get(uuid).get(bonusMalusName);
 			}
 		}
-		if(bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION)
-		{
-			return 1 + d;
-		} else
-		{
-			return d == 0.0 ? 1.0 : d;
-		}
+		return d == 0.0 ? 1.0 : d;
 	}
 	
 	public ArrayList<BonusMalus> getRegisteredBM()
@@ -366,7 +368,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	public void remove(UUID uuid, String bonusMalusName, String reason)
 	{
 		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
-				"`player_uuid` = ? AND `bonusmalusname` = ? AND `reason` = ?", uuid.toString(), bonusMalusName, reason);
+				"`player_uuid` = ? AND `bonus_malus_name` = ? AND `reason` = ?", uuid.toString(), bonusMalusName, reason);
 		quit(uuid);
 		join(uuid);
 	}
@@ -381,14 +383,14 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	public void remove(String bonusMalusName, String reason)
 	{
 		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
-				"`bonusmalusname` = ? AND `reason` = ?", bonusMalusName, reason);
+				"`bonus_malus_name` = ? AND `reason` = ?", bonusMalusName, reason);
 		update();
 	}
 	
 	public boolean hasBonusMalus(UUID uuid, String bonusMalusName)
 	{
 		return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-				"`player_uuid` = ? AND `bonusmalusname` = ?", uuid.toString(), bonusMalusName);
+				"`player_uuid` = ? AND `bonus_malus_name` = ?", uuid.toString(), bonusMalusName);
 	}
 	
 	public boolean hasBonusMalus(UUID uuid, String bonusMalusName, String server, String world)
@@ -396,13 +398,13 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 		if(server != null && world != null)
 		{
 			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonusmalusname` = ? AND `server` = ?"
-					, uuid.toString(), bonusMalusName, server);
+					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ?"
+					, uuid.toString(), bonusMalusName, server, world);
 		} else if(server != null && world == null)
 		{
 			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonusmalusname` = ? AND `server` = ? AND `world` = ?"
-					, uuid.toString(), bonusMalusName, server, world);
+					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ? AND `world` = ?"
+					, uuid.toString(), bonusMalusName, server);
 		}
 		return hasBonusMalus(uuid, bonusMalusName);
 	}
@@ -450,8 +452,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			String server, String world,
 			Long duration)
 	{
-		//1 + (value/100)
-		addFactor(uuid, bonusMalusName, 1 + (value/100), reason, server, world, duration, BonusMalusValueType.MULTIPLICATION);
+		addFactor(uuid, bonusMalusName, value, reason, server, world, duration, BonusMalusValueType.MULTIPLICATION);
 	}
 	
 	private void addFactor(UUID uuid, String bonusMalusName,
@@ -460,7 +461,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			Long duration, BonusMalusValueType bmvt)
 	{
 		BonusMalusValue bmv = new BonusMalusValue(uuid, bonusMalusName, bmvt,
-				value, reason, server, world, duration != null ? duration.longValue()+System.currentTimeMillis() : -1);
+				value, reason, server, world, duration != null ? duration+System.currentTimeMillis() : -1);
 		plugin.getMysqlHandler().create(MysqlHandler.Type.BONUSMALUSVALUE, bmv);
 		update(uuid);
 	}
