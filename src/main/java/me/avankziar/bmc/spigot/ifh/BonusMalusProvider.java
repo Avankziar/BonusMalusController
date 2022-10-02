@@ -267,6 +267,11 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 		{
 			return false;
 		}
+		if(bonusMalusName == null || displayBonusMalusName == null
+				|| bonusMalustype == null || multiplicationCalculationType == null)
+		{
+			return false;
+		}
 		BonusMalus bm = new BonusMalus(bonusMalusName, displayBonusMalusName,
 				isBooleanBonusMalus, bonusMalustype, multiplicationCalculationType, bonusMalusExplanation);
 		plugin.getMysqlHandler().create(MysqlHandler.Type.BONUSMALUS, bm);
