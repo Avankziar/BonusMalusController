@@ -14,7 +14,6 @@ import main.java.me.avankziar.bmc.spigot.objects.BonusMalus;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalusValue;
 import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusType;
 import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusValueType;
-import main.java.me.avankziar.ifh.general.bonusmalus.MultiplicationCalculationType;
 
 public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bonusmalus.BonusMalus
 {
@@ -58,9 +57,6 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 		{
 			String bms = bmv.getBonusMalusName();
 			bmvl.add(bms);
-			BonusMalus bm = (BonusMalus) plugin.getMysqlHandler().getData(MysqlHandler.Type.BONUSMALUS,
-					"`bonus_malus_name` = ?", uuid.toString(), bms);
-			boolean isAdd = bm != null ? bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION : true;
 			if(bmv.getDuration() > 0 && bmv.getDuration() < now)
 			{
 				plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE, "`id` = ?", bmv.getID());
@@ -101,19 +97,16 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 							mulm = summapworld.get(bmv.getWorld());
 						}
 						
-						mulm.put(bms, mulm.containsKey(bms) ?
-								(isAdd ? mulm.get(bms) + bmv.getValue() : mulm.get(bms) * bmv.getValue()) : bmv.getValue());
+						mulm.put(bms, mulm.containsKey(bms) ? mulm.get(bms) + bmv.getValue() : bmv.getValue());
 						mulmapworld.put(bmv.getWorld(), mulm);
 						break;
 					}
 					//server
-					mulmapserver.put(bms, mulmapserver.containsKey(bms) ? 
-							(isAdd ? mulmapserver.get(bms) + bmv.getValue() : mulmapserver.get(bms) * bmv.getValue()) : bmv.getValue());
+					mulmapserver.put(bms, mulmapserver.containsKey(bms) ? mulmapserver.get(bms) + bmv.getValue() : bmv.getValue());
 					break;
 				}
 				//global
-				mulmap.put(bms, mulmap.containsKey(bms) ? 
-						(isAdd ? mulmap.get(bms) + bmv.getValue() : mulmap.get(bms) * bmv.getValue()) : bmv.getValue());
+				mulmap.put(bms, mulmap.containsKey(bms) ? mulmap.get(bms) + bmv.getValue() : bmv.getValue());
 				break;
 			}
 		}
@@ -161,16 +154,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	
 	private double getMulValue(UUID uuid, String bonusMalusName, String server, String world)
 	{
-		BonusMalus bm = null;//registeredBM.stream().filter(b -> bonusMalusName.equals(b.getBonusMalusName())).findFirst().orElse(null);
-		for(BonusMalus b : registeredBM)
-		{
-			if(bonusMalusName.equals(b.getBonusMalusName()))
-			{
-				bm = b;
-				break;
-			}
-		}
-		double d = (bm != null && bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION) ? 0.0 : 1;
+		double d = 0.0;
 		if(server != null)
 		{
 			if(world != null)
@@ -179,37 +163,19 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 						&& bmPerUUIDPerServerPerWorldMUL.get(uuid).containsKey(world)
 						&& bmPerUUIDPerServerPerWorldMUL.get(uuid).get(world).containsKey(bonusMalusName))
 				{
-					if(bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION)
-					{
-						d += bmPerUUIDPerServerPerWorldMUL.get(uuid).get(world).get(bonusMalusName);
-					} else
-					{
-						d *= bmPerUUIDPerServerPerWorldMUL.get(uuid).get(world).get(bonusMalusName);
-					}
+					d += bmPerUUIDPerServerPerWorldMUL.get(uuid).get(world).get(bonusMalusName);
 				}				
 			}
 			if(bmPerUUIDPerServerMUL.containsKey(uuid)
 					&& bmPerUUIDPerServerMUL.get(uuid).containsKey(bonusMalusName))
 			{
-				if(bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION)
-				{
-					d += bmPerUUIDPerServerMUL.get(uuid).get(bonusMalusName);
-				} else
-				{
-					d *= bmPerUUIDPerServerMUL.get(uuid).get(bonusMalusName);
-				}
+				d += bmPerUUIDPerServerMUL.get(uuid).get(bonusMalusName);
 			}
 		}
 		if(bmPerUUIDMUL.containsKey(uuid)
 				&& bmPerUUIDMUL.get(uuid).containsKey(bonusMalusName))
 		{
-			if(bm.getMultiplicationCalculationType() == MultiplicationCalculationType.ADDITION)
-			{
-				d += bmPerUUIDMUL.get(uuid).get(bonusMalusName);
-			} else
-			{
-				d *= bmPerUUIDMUL.get(uuid).get(bonusMalusName);
-			}
+			d += bmPerUUIDMUL.get(uuid).get(bonusMalusName);
 		}
 		return d == 0.0 ? 1.0 : d;
 	}
@@ -260,7 +226,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	
 	public boolean register(String bonusMalusName, String displayBonusMalusName,
 			boolean isBooleanBonusMalus,
-			BonusMalusType bonusMalustype, MultiplicationCalculationType multiplicationCalculationType,
+			BonusMalusType bonusMalustype,
 			String...bonusMalusExplanation)
 	{
 		if(isRegistered(displayBonusMalusName))
@@ -268,12 +234,12 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			return false;
 		}
 		if(bonusMalusName == null || displayBonusMalusName == null
-				|| bonusMalustype == null || multiplicationCalculationType == null)
+				|| bonusMalustype == null)
 		{
 			return false;
 		}
 		BonusMalus bm = new BonusMalus(bonusMalusName, displayBonusMalusName,
-				isBooleanBonusMalus, bonusMalustype, multiplicationCalculationType, bonusMalusExplanation);
+				isBooleanBonusMalus, bonusMalustype, bonusMalusExplanation);
 		plugin.getMysqlHandler().create(MysqlHandler.Type.BONUSMALUS, bm);
 		registeredBM.add(bm);
 		return true;
@@ -325,20 +291,6 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			}
 		}
 		return bmt;
-	}
-	
-	public MultiplicationCalculationType getRegisteredMultiplicationCalculationType(String bonusMalusName)
-	{
-		MultiplicationCalculationType mct = MultiplicationCalculationType.ADDITION;
-		for(BonusMalus bm : registeredBM)
-		{
-			if(bm.getBonusMalusName().equals(bonusMalusName))
-			{
-				mct = bm.getMultiplicationCalculationType();
-				break;
-			}
-		}
-		return mct;
 	}
 	
 	public String[] getRegisteredExplanation(String bonusMalusName)

@@ -37,7 +37,6 @@ import main.java.me.avankziar.bmc.spigot.ifh.BonusMalusProvider;
 import main.java.me.avankziar.bmc.spigot.listener.JoinQuitListener;
 import main.java.me.avankziar.bmc.spigot.permission.Bypass;
 import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusType;
-import main.java.me.avankziar.ifh.general.bonusmalus.MultiplicationCalculationType;
 import main.java.me.avankziar.ifh.spigot.administration.Administration;
 import main.java.me.avankziar.ifh.spigot.metrics.Metrics;
 
@@ -334,7 +333,7 @@ public class BMC extends JavaPlugin
 					pluginName.toLowerCase()+":"+bc.getPath(),
 					plugin.getYamlHandler().getCommands().getString(bc.getPath()+".Displayname", "Command "+bc.getName()),
 					true,
-					BonusMalusType.UP, MultiplicationCalculationType.MULTIPLICATION,
+					BonusMalusType.UP,
 					ex);
 		}
     	new BukkitRunnable()

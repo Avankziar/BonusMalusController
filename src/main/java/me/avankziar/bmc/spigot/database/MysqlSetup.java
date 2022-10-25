@@ -140,7 +140,6 @@ public class MysqlSetup
 		+ " display_name text NOT NULL,"
 		+ " is_boolean_bonus boolean,"
 		+ " bonus_malus_type text,"
-		+ " multiplication_calculation_type text,"
 		+ " explanation LONGTEXT);";
 		baseSetup(data);
 		return true;

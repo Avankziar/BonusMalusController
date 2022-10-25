@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import main.java.me.avankziar.bmc.spigot.database.MysqlHandable;
 import main.java.me.avankziar.bmc.spigot.database.MysqlHandler;
 import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusType;
-import main.java.me.avankziar.ifh.general.bonusmalus.MultiplicationCalculationType;
 
 public class BonusMalus implements MysqlHandable
 {
@@ -18,20 +17,17 @@ public class BonusMalus implements MysqlHandable
 	private String displayBonusMalusName;
 	private boolean isBooleanBonus; //Define if the bonus/malus as boolean understood is.
 	private BonusMalusType bonusMalusType;
-	private MultiplicationCalculationType multiplicationCalculationType;
 	private ArrayList<String> explanation;
 	
 	public BonusMalus(){}
 	
 	public BonusMalus(String bonusMalusName, String displayBonusMalusName,
-			boolean isBooleanBonus, BonusMalusType bonusMalusType,
-			MultiplicationCalculationType multiplicationCalculationType, String[] explanation)
+			boolean isBooleanBonus, BonusMalusType bonusMalusType, String[] explanation)
 	{
 		setBonusMalusName(bonusMalusName);
 		setDisplayBonusMalusName(displayBonusMalusName);
 		setBooleanBonus(isBooleanBonus);
 		setBonusMalusType(bonusMalusType);
-		setMultiplicationCalculationType(multiplicationCalculationType);
 		ArrayList<String> ex = new ArrayList<>();
 		if(explanation != null)
 		{
@@ -83,16 +79,6 @@ public class BonusMalus implements MysqlHandable
 		this.bonusMalusType = bonusMalusType;
 	}
 
-	public MultiplicationCalculationType getMultiplicationCalculationType()
-	{
-		return multiplicationCalculationType;
-	}
-
-	public void setMultiplicationCalculationType(MultiplicationCalculationType multiplicationCalculationType)
-	{
-		this.multiplicationCalculationType = multiplicationCalculationType;
-	}
-
 	public ArrayList<String> getExplanation()
 	{
 		return explanation;
@@ -110,17 +96,16 @@ public class BonusMalus implements MysqlHandable
 		{
 			String sql = "INSERT INTO `" + tablename
 					+ "`(`bonus_malus_name`, `display_name`, `is_boolean_bonus`,"
-					+ " `bonus_malus_type`, `multiplication_calculation_type`, `explanation`) " 
+					+ " `bonus_malus_type`, `explanation`) " 
 					+ "VALUES("
 					+ "?, ?, ?, "
-					+ "?, ?, ?)";
+					+ "?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, bonusMalusName);
 	        ps.setString(2, displayBonusMalusName);
 	        ps.setBoolean(3, isBooleanBonus);
 	        ps.setString(4, bonusMalusType.toString());
-	        ps.setString(5, multiplicationCalculationType.toString());
-	        ps.setString(6, String.join("~!~", explanation));
+	        ps.setString(5, String.join("~!~", explanation));
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
 	        return true;
@@ -138,16 +123,15 @@ public class BonusMalus implements MysqlHandable
 		{
 			String sql = "UPDATE `" + tablename
 				+ "` SET `bonus_malus_name` = ?, `display_name` = ?, `is_boolean_bonus` = ?, `bonus_malus_type` = ?,"
-				+ " `multiplicationcalculationtype` = ?, `explanation` = ?" 
+				+ " `explanation` = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, bonusMalusName);
 	        ps.setString(2, displayBonusMalusName);
 	        ps.setBoolean(3, isBooleanBonus);
 	        ps.setString(4, bonusMalusType.toString());
-	        ps.setString(5, multiplicationCalculationType.toString());
-	        ps.setString(6, String.join("~!~", explanation));
-			int i = 7;
+	        ps.setString(5, String.join("~!~", explanation));
+			int i = 6;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -189,7 +173,6 @@ public class BonusMalus implements MysqlHandable
 						rs.getString("display_name"),
 						rs.getBoolean("is_boolean_bonus"),
 						BonusMalusType.valueOf(rs.getString("bonus_malus_type")),
-						MultiplicationCalculationType.valueOf(rs.getString("multiplication_calculation_type")),
 						rs.getString("explanation").split("~!~")));
 			}
 			return al;
