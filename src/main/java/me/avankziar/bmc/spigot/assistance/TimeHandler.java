@@ -170,4 +170,27 @@ public class TimeHandler
 		long time = y*yyyy+M*MM+d*dd + H*HH + m*mm;
 		return time;
 	}
+	
+	public static long getRepeatingTimeShort(String l) //dd-HH:mm
+	{
+		String[] a = l.split("-");
+		if(!MatchApi.isInteger(a[0]))
+		{
+			return 0;
+		}
+		int d = Integer.parseInt(a[0]);
+		String[] b = a[3].split(":");
+		if(!MatchApi.isInteger(b[0]))
+		{
+			return 0;
+		}
+		if(!MatchApi.isInteger(b[1]))
+		{
+			return 0;
+		}
+		int H = Integer.parseInt(b[0]);
+		int m = Integer.parseInt(b[1]);
+		long time = d*dd + H*HH + m*mm;
+		return time;
+	}
 }

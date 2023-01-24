@@ -85,7 +85,7 @@ public class BMCAddCmdExecutor implements CommandExecutor
 				return false;
 			}
 			server = sp[1];
-		} else if(type.startsWith("server"))
+		} else if(type.startsWith("world"))
 		{
 			String[] sp = type.split(":");
 			if(sp.length != 3)
@@ -96,7 +96,7 @@ public class BMCAddCmdExecutor implements CommandExecutor
 			}
 			server = sp[1];
 			world = sp[2];
-		} else if(!type.startsWith("global"))
+		} else
 		{
 			type = "global";
 		}
@@ -116,13 +116,16 @@ public class BMCAddCmdExecutor implements CommandExecutor
 					ClickEvent.Action.RUN_COMMAND, BMC.infoCommand));
 			return false;
 		}
-		if(!MatchApi.isLong(dur))
+		if(MatchApi.isLong(dur))
 		{
+			duration = Long.parseLong(dur);
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%value%", dur)));
 			return false;
+		} else
+		{
+			duration = TimeHandler.getRepeatingTimeShort(dur);
 		}
-		duration = Long.parseLong(dur);
 		if(duration == 0)
 		{
 			duration = -1;
