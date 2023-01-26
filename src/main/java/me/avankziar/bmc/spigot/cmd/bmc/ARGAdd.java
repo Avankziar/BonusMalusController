@@ -1,76 +1,54 @@
-package main.java.me.avankziar.bmc.spigot.cmd;
+package main.java.me.avankziar.bmc.spigot.cmd.bmc;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.bmc.general.ChatApi;
 import main.java.me.avankziar.bmc.spigot.BMC;
 import main.java.me.avankziar.bmc.spigot.assistance.MatchApi;
 import main.java.me.avankziar.bmc.spigot.assistance.TimeHandler;
-import main.java.me.avankziar.bmc.spigot.cmdtree.CommandConstructor;
-import main.java.me.avankziar.bmc.spigot.permission.BonusMalusPermission;
+import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
+import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusValueType;
 import net.md_5.bungee.api.chat.ClickEvent;
 
-public class BMCAddCmdExecutor implements CommandExecutor
+public class ARGAdd extends ArgumentModule
 {
 	private BMC plugin;
-	private static CommandConstructor cc;
 	
-	public BMCAddCmdExecutor(BMC plugin, CommandConstructor cc)
+	public ARGAdd(ArgumentConstructor argumentConstructor)
 	{
-		this.plugin = plugin;
-		BMCAddCmdExecutor.cc = cc;
+		super(argumentConstructor);
+		this.plugin = BMC.getPlugin();
 	}
-	
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
+	public void run(CommandSender sender, String[] args) throws IOException
 	{
-		if(cc == null)
-		{
-			return false;
-		}
-		if (sender instanceof Player) 
-		{
-			Player player = (Player) sender;
-			if(!BonusMalusPermission.hasPermission(player, cc))
-			{
-				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
-				return false;
-			}
-		}
-		if(args.length < 6)
-		{
-			sender.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
-					ClickEvent.Action.RUN_COMMAND, BMC.infoCommand));
-			return false;
-		}
-		String bonusmalus = args[0];
-		String othername = args[1];
-		String type = args[2];
-		String value = args[3];
+		String bonusmalus = args[1];
+		String othername = args[2];
+		String type = args[3];
+		String value = args[4];
 		double d = 0.0;
-		String bmvtValue = args[4];
-		String dur = args[5];
+		String bmvtValue = args[5];
+		String dur = args[6];
 		long duration = -1;
 		String reason = "";
 		BonusMalusValueType bmvt = BonusMalusValueType.ADDITION;
 		if(!plugin.getBonusMalusProvider().isRegistered(bonusmalus))
 		{
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAdd.IsNotRegistered")));
-			return false;
+			return;
 		}
 		OfflinePlayer other = Bukkit.getPlayer(othername);
 		if(other == null || !other.hasPlayedBefore())
 		{
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerNotExist")));
-			return false;
+			return;
 		}
 		final UUID uuid = other.getUniqueId();
 		String server = null;
@@ -82,7 +60,7 @@ public class BMCAddCmdExecutor implements CommandExecutor
 			{
 				sender.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 						ClickEvent.Action.RUN_COMMAND, BMC.infoCommand));
-				return false;
+				return;
 			}
 			server = sp[1];
 		} else if(type.startsWith("world"))
@@ -92,7 +70,7 @@ public class BMCAddCmdExecutor implements CommandExecutor
 			{
 				sender.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 						ClickEvent.Action.RUN_COMMAND, BMC.infoCommand));
-				return false;
+				return;
 			}
 			server = sp[1];
 			world = sp[2];
@@ -104,7 +82,7 @@ public class BMCAddCmdExecutor implements CommandExecutor
 		{
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoDouble")
 					.replace("%value%", value)));
-			return false;
+			return;
 		}
 		d = Double.parseDouble(value);
 		try
@@ -114,14 +92,14 @@ public class BMCAddCmdExecutor implements CommandExecutor
 		{
 			sender.spigot().sendMessage(ChatApi.clickEvent(plugin.getYamlHandler().getLang().getString("InputIsWrong"),
 					ClickEvent.Action.RUN_COMMAND, BMC.infoCommand));
-			return false;
+			return;
 		}
 		if(MatchApi.isLong(dur))
 		{
 			duration = Long.parseLong(dur);
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoNumber")
 					.replace("%value%", dur)));
-			return false;
+			return;
 		} else
 		{
 			duration = TimeHandler.getRepeatingTimeShort(dur);
@@ -130,7 +108,7 @@ public class BMCAddCmdExecutor implements CommandExecutor
 		{
 			duration = -1;
 		}
-		for (int i = 6; i < args.length; i++) 
+		for (int i = 7; i < args.length; i++) 
         {
 			reason += args[i];
 			if(i < (args.length-1))
@@ -171,6 +149,6 @@ public class BMCAddCmdExecutor implements CommandExecutor
 					.replace("%reason%", reason)
 					));
 		}
-		return true;
+		return;
 	}
 }

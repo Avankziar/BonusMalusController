@@ -18,24 +18,32 @@ import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusValueType;
 public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bonusmalus.BonusMalus
 {
 	private BMC plugin;
-	private ArrayList<BonusMalus> registeredBM = new ArrayList<>();
-	private LinkedHashMap<UUID, LinkedHashMap<String, Double>> bmPerUUIDSUM = new LinkedHashMap<>();
-	private LinkedHashMap<UUID, LinkedHashMap<String, Double>> bmPerUUIDMUL = new LinkedHashMap<>();
-	private LinkedHashMap<UUID, LinkedHashMap<String, Double>> bmPerUUIDPerServerSUM = new LinkedHashMap<>();
-	private LinkedHashMap<UUID, LinkedHashMap<String, Double>> bmPerUUIDPerServerMUL = new LinkedHashMap<>();
-	private LinkedHashMap<UUID, LinkedHashMap<String, LinkedHashMap<String, Double>>> bmPerUUIDPerServerPerWorldSUM = new LinkedHashMap<>();
-	private LinkedHashMap<UUID, LinkedHashMap<String, LinkedHashMap<String, Double>>> bmPerUUIDPerServerPerWorldMUL = new LinkedHashMap<>();
+	private static ArrayList<BonusMalus> registeredBM = new ArrayList<>();
+	private static LinkedHashMap<UUID, LinkedHashMap<String, Double>> bmPerUUIDSUM = new LinkedHashMap<>();
+	private static LinkedHashMap<UUID, LinkedHashMap<String, Double>> bmPerUUIDMUL = new LinkedHashMap<>();
+	private static LinkedHashMap<UUID, LinkedHashMap<String, Double>> bmPerUUIDPerServerSUM = new LinkedHashMap<>();
+	private static LinkedHashMap<UUID, LinkedHashMap<String, Double>> bmPerUUIDPerServerMUL = new LinkedHashMap<>();
+	private static LinkedHashMap<UUID, LinkedHashMap<String, LinkedHashMap<String, Double>>> bmPerUUIDPerServerPerWorldSUM = new LinkedHashMap<>();
+	private static LinkedHashMap<UUID, LinkedHashMap<String, LinkedHashMap<String, Double>>> bmPerUUIDPerServerPerWorldMUL = new LinkedHashMap<>();
 	
 	public BonusMalusProvider(BMC plugin)
 	{
 		this.plugin = plugin;
+		if(registeredBM.isEmpty())
+		{
+			init();
+		}
 	}
 	
 	public void init()
 	{
 		ArrayList<BonusMalus> bmlist = BonusMalus.convert(plugin.getMysqlHandler()
-				.getFullList(MysqlHandler.Type.BONUSMALUS, "`bonus_malus_name`", "id > 0"));
+				.getFullList(MysqlHandler.Type.BONUSMALUS, "`id`", "1"));
 		registeredBM.addAll(bmlist);
+		for(BonusMalus bm : bmlist)
+		{
+			BMC.log.info("BonusMalus: "+bm.getBonusMalusName());
+		}
 	}
 	
 	public void join(UUID uuid)
@@ -221,7 +229,15 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 
 	public boolean isRegistered(String bonusMalusName)
 	{
-		return registeredBM.stream().anyMatch(x -> x.getBonusMalusName().equals(bonusMalusName));
+		for(BonusMalus bm : registeredBM)
+		{
+			BMC.log.info("bm: "+bm.getBonusMalusName()+" | toReg: "+bonusMalusName+" | equals: "+bm.getBonusMalusName().equals(bonusMalusName));
+			if(bm.getBonusMalusName().equals(bonusMalusName))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public boolean register(String bonusMalusName, String displayBonusMalusName,
@@ -229,7 +245,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			BonusMalusType bonusMalustype,
 			String...bonusMalusExplanation)
 	{
-		if(isRegistered(displayBonusMalusName))
+		if(isRegistered(bonusMalusName))
 		{
 			return false;
 		}

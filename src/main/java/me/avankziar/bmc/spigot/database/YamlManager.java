@@ -155,35 +155,52 @@ public class YamlManager
 				60}));
 	}
 	
-	@SuppressWarnings("unused") //INFO:Commands
+	//INFO:Commands
 	public void initCommands()
 	{
 		comBypass();
-		String path = "";
-		commandsInput("bmc", "bmc", "bmc.cmd.bmc", 
-				"/bmc [page] [playername] [global/server/world]", "/bmc ", false,
-				"&c/bmc [Seite] [Spielername] [global/server/world] &f| Infoseite für alle Befehle.",
-				"&c/bmc [page] [playername] [global/server/world] &f| Info page for all commands.",
+		String path = "bmc";
+		commandsInput(path, "bmc", "bmc.cmd.bmc", 
+				"/bmc [page]", "/bmc ", false,
+				"&c/bmc [Seite] &f| Infoseite für alle Befehle.",
+				"&c/bmc [page] &f| Info page for all commands.",
 				"&bBefehlsrecht für &f/bmc",
 				"&bCommandright for &f/bmc",
 				"&eInfoseite für alle Befehle.",
 				"&eInfo page for all commands.");
-		commandsInput("bmcboni", "bmcboni", "bmc.cmd.bmcboni", 
-				"/bmcboni [page] [playername] [global/server/world]", "/bmcboni ", false,
-				"&c/bmcboni [Seite] [Spielername] [global/server/world] &f| Listet alle aktiven Boni/Mali des Spielers mit Hovererklärung auf.",
-				"&c/bmcboni [page] [playername] [global/server/world] &f| Lists all active bonuses/maluses of the player with hoverexplanation.",
-				"&bBefehlsrecht für &f/bmcboni",
-				"&bCommandright for &f/bmcboni",
-				"&eListet alle aktiven Boni/Mali des Spielers mit Hovererklärung auf.",
-				"&eLists all active bonuses/maluses of the player with hoverexplanation.");
-		commandsInput("bmcadd", "bmcadd", "bmc.cmd.bmcadd", 
-				"/bmcadd <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...>", "/bmcadd ", false,
-				"&c/bmcadd <BonusMalus> <Spieler> <global/server:servername/world:servername:weltname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <Grund...> &f| Fügt dem angegeben Spieler einen Bonus/Malus hinzu.",
-				"&c/bmcadd <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...> &f| Adds a bonus/penalty to the specified player.",
-				"&bBefehlsrecht für &f/bmcadd",
-				"&bCommandright for &f/bmcadd",
+		String perm = "bmc.cmd";		
+		argumentInput(path+"_add", "add", perm,
+				"/bmc add <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...>", "/bmc add ", false,
+				"&c/bmc add <BonusMalus> <Spieler> <global/server:servername/world:servername:weltname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <Grund...> &f| Fügt dem angegeben Spieler einen Bonus/Malus hinzu.",
+				"&c/bmc add <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...> &f| Adds a bonus/penalty to the specified player.",
+				"&bBefehlsrecht für &f/bmc add",
+				"&bCommandright for &f/bmc add",
 				"&eFügt dem angegeben Spieler einen Bonus/Malus hinzu.",
 				"&eAdds a bonus/penalty to the specified player.");
+		argumentInput(path+"_boni", "boni", perm,
+				"/bmc boni [page] [playername] [global/server/world]", "/bmc boni ", false,
+				"&c/bmc boni [Seite] [Spielername] [global/server/world] &f| Listet alle aktiven Boni/Mali des Spielers mit Hovererklärung auf.",
+				"&c/bmc boni [page] [playername] [global/server/world] &f| Lists all active bonuses/maluses of the player with hoverexplanation.",
+				"&bBefehlsrecht für &f/bmc boni",
+				"&bCommandright for &f/bmc boni",
+				"&eListet alle aktiven Boni/Mali des Spielers mit Hovererklärung auf.",
+				"&eLists all active bonuses/maluses of the player with hoverexplanation.");
+		argumentInput(path+"_registered", "registered", perm,
+				"/bmc registered [page]", "/bmc registered ", false,
+				"&c/bmc registered [Seite] &f| Listet alle Pluginbasierende registrierte Boni/Mali auf.",
+				"&c/bmc registered [page] &f| Lists all plugin based registered bonus/penalty.",
+				"&bBefehlsrecht für &f/bmc registered",
+				"&bCommandright for &f/bmc registered",
+				"&eListet alle Pluginbasierende registrierte Boni/Mali auf.",
+				"&eLists all plugin based registered bonus/penalty.");
+		argumentInput(path+"_remove", "remove", perm,
+				"/bmc remove <bonusmalus> <player> <reason...>", "/bmc remove ", false,
+				"&c/bmc remove <BonusMalus> <Spieler> <Grund...> &f| Entfernt dem angegeben Spieler einen Bonus/Malus.",
+				"&c/bmc remove <bonusmalus> <player> <reason...> &f| Remove a bonus/penalty to the specified player.",
+				"&bBefehlsrecht für &f/bmc remove",
+				"&bCommandright for &f/bmc remove",
+				"&eEntfernt dem angegeben Spieler einen Bonus/Malus.",
+				"&eRemove a bonus/penalty to the specified player.");
 	}
 	
 	private void comBypass() //INFO:ComBypass
@@ -209,6 +226,41 @@ public class YamlManager
 		commandsKeys.put(path+".Permission"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				basePermission}));
+		commandsKeys.put(path+".Suggestion"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				suggestion}));
+		commandsKeys.put(path+".PutUpCommandPermToBonusMalusSystem"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				putUpCmdPermToBonusMalusSystem}));
+		commandsKeys.put(path+".CommandString"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				commandString}));
+		commandsKeys.put(path+".HelpInfo"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				helpInfoGerman,
+				helpInfoEnglish}));
+		commandsKeys.put(path+".Displayname"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				dnGerman,
+				dnEnglish}));
+		commandsKeys.put(path+".Explanation"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+				exGerman,
+				exEnglish}));
+	}
+	
+	private void argumentInput(String path, String argument, String basePermission, 
+			String suggestion, String commandString, boolean putUpCmdPermToBonusMalusSystem,
+			String helpInfoGerman, String helpInfoEnglish,
+			String dnGerman, String dnEnglish,
+			String exGerman, String exEnglish)
+	{
+		commandsKeys.put(path+".Argument"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				argument}));
+		commandsKeys.put(path+".Permission"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				basePermission+"."+argument}));
 		commandsKeys.put(path+".Suggestion"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				suggestion}));
@@ -264,8 +316,8 @@ public class YamlManager
 						"&eClick me!"}));
 		languageKeys.put("Headline", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&e=====&7[&6BungeeTeleportManager&7]&e=====",
-						"&e=====&7[&6BungeeTeleportManager&7]&e====="}));
+						"&e=====&7[&6BonusMalusController&7]&e=====",
+						"&e=====&7[&6BBonusMalusController&7]&e====="}));
 		languageKeys.put("Next", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&e&nnächste Seite &e==>",
@@ -282,35 +334,35 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&cDer Spieler &f%player% &chat keine Boni oder Mali!",
 						"&cThe player &f%player% &chas no bonuses or maluses!"}));
-		languageKeys.put("Cmd.Headline", 
+		languageKeys.put("CmdBoni.Headline", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&e===&fBoni/Mali &6von &c%player%&f, Seite %page%, GesamtAnzahl: %amount%&e===",
-						"&e===&fBoni/Mali &6from &c%player%&f, page %page%, totalamount: %amount%&e==="}));
+						"&e===&fBoni/Mali &6von &c%player%&f, Seite %page%&e===",
+						"&e===&fBoni/Mali &6from &c%player%&f, page %page%&e==="}));
 		languageKeys.put("Cmd.LineTwo", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&fAlle Werte wurde mit einem BasisWert von 1.0 berechnet!",
 						"&fAll values were calculated with a base value of 1.0!"}));
-		languageKeys.put("Cmd.BonusMalusDescriptionOne", 
+		languageKeys.put("CmdBoni.BonusMalusDescriptionOne", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%displayname%&r: ",
 						"%displayname%&r: "}));
-		languageKeys.put("Cmd.BonusMalusDescriptionTwo", 
+		languageKeys.put("CmdBoni.BonusMalusDescriptionTwo", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%value% ",
 						"%value% "}));
-		languageKeys.put("Cmd.BonusMalusDescriptionThree", 
+		languageKeys.put("CmdBoni.BonusMalusDescriptionThree", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&6Erklärungshover",
 						"&6Erklärungshover"}));
-		languageKeys.put("Cmd.True", 
+		languageKeys.put("CmdBoni.True", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&a✔",
 						"&a✔"}));
-		languageKeys.put("Cmd.False", 
+		languageKeys.put("CmdBoni.False", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&c✖",
 						"&c✖"}));
-		languageKeys.put("Cmd.BaseValue", 
+		languageKeys.put("CmdBoni.BaseValue", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&#fc9303BaseWert: &r%value%",
 						"&#fc9303Basevalue: &r%value%"}));
@@ -326,5 +378,21 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&eDer Spieler &f%player% &ehat den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %duration% | %reason%",
 						"&eThe player &f%player% &ehas received the bonus/malus &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %duration% | %reason%"}));
+		languageKeys.put("CmdRegistered.Headline", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&e===&fRegistrierte Boni/Mali, Seite %page%, GesamtAnzahl: %amount%&e===",
+						"&e===&fRegistered Boni/Mali, page %page%, totalamount: %amount%&e==="}));
+		languageKeys.put("CmdRegistered.BonusMalusDescriptionOne", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"%displayname%&r: ",
+						"%displayname%&r: "}));
+		languageKeys.put("CmdRegistered.BonusMalusDescriptionTwo", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&6Erklärungshover",
+						"&6Erklärungshover"}));
+		languageKeys.put("CmdRemove.Remove", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDer Spieler &f%player% &ehat die &f%count% &eBonus/Malus &f%bm% &emit dem %f%reason% &cverloren!",
+						"&eThe player &f%player% &ehas &clost &ethe &f%count% &eBonus/Malus &f%bm% &with the %f%reason%&e!"}));		
 	}
 }

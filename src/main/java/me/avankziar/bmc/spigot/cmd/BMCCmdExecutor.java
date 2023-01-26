@@ -16,6 +16,7 @@ import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.bmc.spigot.cmdtree.BaseConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.CommandConstructor;
+import main.java.me.avankziar.bmc.spigot.permission.BonusMalusPermission;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -88,7 +89,7 @@ public class BMCCmdExecutor implements CommandExecutor
 						if (sender instanceof Player)
 						{
 							Player player = (Player) sender;
-							if(player.hasPermission(ac.getPermission()))
+							if(BonusMalusPermission.hasPermission(player, ac))
 							{
 								ArgumentModule am = plugin.getArgumentMap().get(ac.getPath());
 								if(am != null)
@@ -186,7 +187,7 @@ public class BMCCmdExecutor implements CommandExecutor
 				HoverEvent.Action.SHOW_TEXT,plugin.getYamlHandler().getLang().getString("GeneralHover")));
 	}
 	
-	public void pastNextPage(Player player,
+	public static void pastNextPage(Player player,
 			int page, boolean lastpage, String cmdstring, String...objects)
 	{
 		if(page==0 && lastpage)
@@ -200,7 +201,7 @@ public class BMCCmdExecutor implements CommandExecutor
 		if(page!=0)
 		{
 			TextComponent msg2 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString("Past"));
+					BMC.getPlugin().getYamlHandler().getLang().getString("Past"));
 			String cmd = cmdstring+" "+String.valueOf(j);
 			for(String o : objects)
 			{
@@ -212,7 +213,7 @@ public class BMCCmdExecutor implements CommandExecutor
 		if(!lastpage)
 		{
 			TextComponent msg1 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString("Next"));
+					BMC.getPlugin().getYamlHandler().getLang().getString("Next"));
 			String cmd = cmdstring+" "+String.valueOf(i);
 			for(String o : objects)
 			{

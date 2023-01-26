@@ -22,9 +22,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.bmc.spigot.assistance.BackgroundTask;
-import main.java.me.avankziar.bmc.spigot.cmd.BMCAddCmdExecutor;
-import main.java.me.avankziar.bmc.spigot.cmd.BMCBoniCmdExecutor;
 import main.java.me.avankziar.bmc.spigot.cmd.BMCCmdExecutor;
+import main.java.me.avankziar.bmc.spigot.cmd.TabCompletion;
+import main.java.me.avankziar.bmc.spigot.cmd.bmc.ARGAdd;
+import main.java.me.avankziar.bmc.spigot.cmd.bmc.ARGBoni;
+import main.java.me.avankziar.bmc.spigot.cmd.bmc.ARGRegistered;
+import main.java.me.avankziar.bmc.spigot.cmd.bmc.ARGRemove;
+import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.bmc.spigot.cmdtree.BaseConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.CommandConstructor;
@@ -153,17 +157,22 @@ public class BMC extends JavaPlugin
 	{		
 		infoCommand += plugin.getYamlHandler().getCommands().getString("bmc.Name");
 		
-		CommandConstructor bmc = new CommandConstructor(CommandExecuteType.BMC, "bmc", false);
+		TabCompletion tab = new TabCompletion(plugin);
+		
+		ArgumentConstructor add = new ArgumentConstructor(CommandExecuteType.BMC_ADD, "bmc_add", 0, 6, 999, true, null);
+		new ARGAdd(add);
+		ArgumentConstructor boni = new ArgumentConstructor(CommandExecuteType.BMC_BONI, "bmc_boni", 0, 0, 3, true, null);
+		new ARGBoni(boni);
+		ArgumentConstructor registered = new ArgumentConstructor(CommandExecuteType.BMC_REGISTERED, "bmc_registered", 0, 0, 1, false, null);
+		new ARGRegistered(registered);
+		ArgumentConstructor remove = new ArgumentConstructor(CommandExecuteType.BMC_REMOVE, "bmc_remove", 0, 2, 999, true, null);
+		new ARGRemove(remove);
+		
+		CommandConstructor bmc = new CommandConstructor(CommandExecuteType.BMC, "bmc", true,
+				add, boni, registered, remove);
 		registerCommand(bmc.getPath(), bmc.getName());
 		getCommand(bmc.getName()).setExecutor(new BMCCmdExecutor(plugin, bmc));
-		
-		CommandConstructor bmcboni = new CommandConstructor(CommandExecuteType.BMCBONI, "bmcboni", false);
-		registerCommand(bmcboni.getPath(), bmcboni.getName());
-		getCommand(bmcboni.getName()).setExecutor(new BMCBoniCmdExecutor(plugin, bmcboni));
-		
-		CommandConstructor bmcadd = new CommandConstructor(CommandExecuteType.BMCADD, "bmcadd", true);
-		registerCommand(bmcadd.getPath(), bmcadd.getName());
-		getCommand(bmcadd.getName()).setExecutor(new BMCAddCmdExecutor(plugin, bmcadd));
+		getCommand(bmc.getName()).setTabCompleter(tab);
 	}
 	
 	public void setupBypassPerm()
@@ -336,15 +345,6 @@ public class BMC extends JavaPlugin
 					BonusMalusType.UP,
 					ex);
 		}
-    	new BukkitRunnable()
-		{
-			
-			@Override
-			public void run()
-			{
-				bmProvider.init();
-			}
-		}.runTaskLaterAsynchronously(plugin, 20L*10);
 		return false;
 	}
 	

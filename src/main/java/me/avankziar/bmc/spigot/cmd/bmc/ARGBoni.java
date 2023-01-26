@@ -1,15 +1,13 @@
-package main.java.me.avankziar.bmc.spigot.cmd;
+package main.java.me.avankziar.bmc.spigot.cmd.bmc;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -17,79 +15,59 @@ import main.java.me.avankziar.bmc.general.ChatApi;
 import main.java.me.avankziar.bmc.spigot.BMC;
 import main.java.me.avankziar.bmc.spigot.assistance.MatchApi;
 import main.java.me.avankziar.bmc.spigot.assistance.TimeHandler;
-import main.java.me.avankziar.bmc.spigot.cmdtree.CommandConstructor;
+import main.java.me.avankziar.bmc.spigot.cmd.BMCCmdExecutor;
+import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
+import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.bmc.spigot.database.MysqlHandler;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalus;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalusValue;
-import main.java.me.avankziar.bmc.spigot.permission.BonusMalusPermission;
 import main.java.me.avankziar.bmc.spigot.permission.Bypass;
 import main.java.me.avankziar.bmc.spigot.permission.Bypass.Permission;
 import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusValueType;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
-public class BMCBoniCmdExecutor implements CommandExecutor
+public class ARGBoni extends ArgumentModule
 {
 	private BMC plugin;
-	private static CommandConstructor cc;
-	private HashMap<UUID, Long> cooldown = new HashMap<>();
+	private HashMap<String, Long> cooldown = new HashMap<>();
+	private ArgumentConstructor ac = null;
 	
-	public BMCBoniCmdExecutor(BMC plugin, CommandConstructor cc)
+	public ARGBoni(ArgumentConstructor argumentConstructor)
 	{
-		this.plugin = plugin;
-		BMCBoniCmdExecutor.cc = cc;
+		super(argumentConstructor);
+		this.plugin = BMC.getPlugin();
+		this.ac = argumentConstructor;
 	}
-	
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) 
+	public void run(CommandSender sender, String[] args) throws IOException
 	{
-		if (!(sender instanceof Player)) 
-		{
-			BMC.log.info("/%cmd% is only for Player!".replace("%cmd%", cc.getName()));
-			return false;
-		}
 		Player player = (Player) sender;
-		if(cc == null)
+		if(cooldown.containsKey(player.getName()))
 		{
-			return false;
-		}
-		if(!BonusMalusPermission.hasPermission(player, cc))
-		{
-			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
-			return false;
-		}
-		baseCommands(player, args); //Base and Info Command
-		return true;
-	}
-	
-	public void baseCommands(final Player player, String[] args)
-	{
-		if(cooldown.containsKey(player.getUniqueId()))
-		{
-			if(cooldown.get(player.getUniqueId()) > System.currentTimeMillis())
+			if(cooldown.get(player.getName()) > System.currentTimeMillis())
 			{
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerCmdCooldown")));
 				return;
 			}
-			
 		}
-		cooldown.put(player.getUniqueId(), System.currentTimeMillis()+1000L*30);
+		cooldown.put(player.getName(), System.currentTimeMillis()+1000L*30);
 		int page = 0;
-		if(args.length >= 1 && MatchApi.isInteger(args[0]))
+		if(args.length >= 2 && MatchApi.isInteger(args[1]))
 		{
-			page = Integer.parseInt(args[0]);
+			page = Integer.parseInt(args[1]);
 		}
 		String othername = player.getName();
-		if(args.length >= 2)
+		if(args.length >= 3)
 		{
 			if(!player.hasPermission(Bypass.get(Permission.OTHERPLAYER)))
 			{
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return;
 			}
-			othername = args[1];
+			othername = args[2];
 		}
 		Player other = Bukkit.getPlayer(othername);
 		if(other == null)
@@ -145,7 +123,7 @@ public class BMCBoniCmdExecutor implements CommandExecutor
 				break;
 			}
 		}
-		boolean lastpage = rg.size()-1 > i;
+		boolean lastpage = rg.size()-10 < i;
 		if(map.isEmpty())
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerHasNoBonus")
@@ -154,26 +132,25 @@ public class BMCBoniCmdExecutor implements CommandExecutor
 		}
 		ArrayList<ArrayList<BaseComponent>> bc = new ArrayList<>();
 		ArrayList<BaseComponent> bc1 = new ArrayList<>();
-		bc1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.Headline")
+		bc1.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdBoni.Headline")
 				.replace("%player%", othername)
-				.replace("%page%", String.valueOf(page))
-				.replace("%amount%", String.valueOf(map.size()))));
+				.replace("%page%", String.valueOf(page))));
 		bc.add(bc1);
 		ArrayList<BaseComponent> bc2 = new ArrayList<>();
-		bc2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.LineTwo")));
+		bc2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdBoni.LineTwo")));
 		bc.add(bc2);
 		for(Entry<BonusMalus, Double> bme : map.entrySet())
 		{
 			BonusMalus bm = bme.getKey();
 			Double d = bme.getValue();
 			ArrayList<BaseComponent> bc3 = new ArrayList<>();
-			bc3.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("Cmd.BonusMalusDescriptionOne")
+			bc3.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionOne")
 					.replace("%displayname%", bm.getDisplayBonusMalusName())));
 			ArrayList<BonusMalusValue> bmv = BonusMalusValue.convert(
 					plugin.getMysqlHandler().getFullList(MysqlHandler.Type.BONUSMALUSVALUE, "`id` ASC",
 					"`bonus_malus_name` = ?", bm.getBonusMalusName()));
 			ArrayList<String> vlist = new ArrayList<>();
-			vlist.add(plugin.getYamlHandler().getLang().getString("Cmd.BaseValue")
+			vlist.add(plugin.getYamlHandler().getLang().getString("CmdBoni.BaseValue")
 					.replace("%value%", String.valueOf(1.0)));
 			for(BonusMalusValue bmvv : bmv)
 			{
@@ -185,8 +162,8 @@ public class BMCBoniCmdExecutor implements CommandExecutor
 				{
 					sb.append("&#6D6D6D(x) &r");
 				}
-				sb.append(bmvv.getValue());
-				sb.append(" >> "+bmvv.getReason());
+				sb.append("'"+bmvv.getValue()+"'");
+				sb.append(" >> '"+bmvv.getReason()+"'");
 				if(bmvv.getDuration() > 0)
 				{
 					long dur = bmvv.getDuration()-System.currentTimeMillis();
@@ -198,16 +175,16 @@ public class BMCBoniCmdExecutor implements CommandExecutor
 			if(bm.isBooleanBonus())
 			{
 				value = d >= 1.0 
-						? plugin.getYamlHandler().getLang().getString("Cmd.True") 
-						: plugin.getYamlHandler().getLang().getString("Cmd.False");
+						? plugin.getYamlHandler().getLang().getString("CmdBoni.True") 
+						: plugin.getYamlHandler().getLang().getString("CmdBoni.False");
 			} else
 			{
 				value = String.valueOf(d);
 			}
-			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.BonusMalusDescriptionTwo")
+			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionTwo")
 					.replace("%value%", value),
 					HoverEvent.Action.SHOW_TEXT, String.join("~!~", vlist)));
-			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("Cmd.BonusMalusDescriptionThree"),
+			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionThree"),
 					HoverEvent.Action.SHOW_TEXT, String.join("~!~", bm.getExplanation())));
 			bc.add(bc3);
 		}
@@ -217,50 +194,6 @@ public class BMCBoniCmdExecutor implements CommandExecutor
 			tc.setExtra(b);
 			player.spigot().sendMessage(tc);
 		}
-		pastNextPage(player, page, lastpage, String.valueOf(page), othername, type);
+		BMCCmdExecutor.pastNextPage(player, page, lastpage, ac.getCommandString(), othername, type);
 	}
-	
-	public void pastNextPage(Player player,
-			int page, boolean lastpage, String cmdstring, String...objects)
-	{
-		if(page==0 && lastpage)
-		{
-			return;
-		}
-		int i = page+1;
-		int j = page-1;
-		TextComponent MSG = ChatApi.tctl("");
-		List<BaseComponent> pages = new ArrayList<BaseComponent>();
-		if(page!=0)
-		{
-			TextComponent msg2 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString("Past"));
-			String cmd = cmdstring+" "+String.valueOf(j);
-			for(String o : objects)
-			{
-				cmd += " "+o;
-			}
-			msg2.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
-			pages.add(msg2);
-		}
-		if(!lastpage)
-		{
-			TextComponent msg1 = ChatApi.tctl(
-					plugin.getYamlHandler().getLang().getString("Next"));
-			String cmd = cmdstring+" "+String.valueOf(i);
-			for(String o : objects)
-			{
-				cmd += " "+o;
-			}
-			msg1.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd));
-			if(pages.size()==1)
-			{
-				pages.add(ChatApi.tc(" | "));
-			}
-			pages.add(msg1);
-		}
-		MSG.setExtra(pages);	
-		player.spigot().sendMessage(MSG);
-	}
-
 }
