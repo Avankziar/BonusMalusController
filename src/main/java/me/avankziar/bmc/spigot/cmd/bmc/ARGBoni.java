@@ -53,7 +53,7 @@ public class ARGBoni extends ArgumentModule
 				return;
 			}
 		}
-		cooldown.put(player.getName(), System.currentTimeMillis()+1000L*30);
+		cooldown.put(player.getName(), System.currentTimeMillis()+1000L*10);
 		int page = 0;
 		if(args.length >= 2 && MatchApi.isInteger(args[1]))
 		{
@@ -100,30 +100,22 @@ public class ARGBoni extends ArgumentModule
 		}
 		ArrayList<BonusMalus> rg = plugin.getBonusMalusProvider().getRegisteredBM();
 		LinkedHashMap<BonusMalus, Double> map = new LinkedHashMap<>();
-		int i = page * 15;
-		int j = 0;
-		int end = i + 15;
-		for(BonusMalus bm : rg)
+		int end = page * 10 + 9;
+		for(int i = page * 10; i < rg.size(); i++)
 		{
-			if(i != j)
-			{
-				j++;
-				continue;
-			}
+			BonusMalus bm = rg.get(i);
 			if(!plugin.getBonusMalusProvider().hasBonusMalus(uuid, bm.getBonusMalusName(), server, world))
 			{
 				continue;
 			}
 			map.put(bm, plugin.getBonusMalusProvider().getResult(uuid, 1.0, bm.getBonusMalusName(),
 					server, world));
-			i++;
-			j++;
 			if(i >= end)
 			{
 				break;
 			}
 		}
-		boolean lastpage = rg.size()-10 < i;
+		boolean lastpage = rg.size()-9 < page * 10;
 		if(map.isEmpty())
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerHasNoBonus")
@@ -139,19 +131,30 @@ public class ARGBoni extends ArgumentModule
 		ArrayList<BaseComponent> bc2 = new ArrayList<>();
 		bc2.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdBoni.LineTwo")));
 		bc.add(bc2);
+		ArrayList<BaseComponent> bc4 = new ArrayList<>();
+		bc4.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdBoni.LineThree")));
+		bc.add(bc4);
+		ArrayList<BaseComponent> bc5 = new ArrayList<>();
+		bc5.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdBoni.LineFour")));
+		bc.add(bc5);
 		for(Entry<BonusMalus, Double> bme : map.entrySet())
 		{
 			BonusMalus bm = bme.getKey();
-			Double d = bme.getValue();
+			final double d = plugin.getBonusMalusProvider().getLastBaseValue(uuid, bme.getValue().doubleValue(),
+					bm.getBonusMalusName(), server, world);
+			final double sum = plugin.getBonusMalusProvider().getSumValue(uuid, bm.getBonusMalusName(), server, world);
+			final double mul = plugin.getBonusMalusProvider().getMulValue(uuid, bm.getBonusMalusName(), server, world);
+			final double dd = (d + sum) * mul; 
 			ArrayList<BaseComponent> bc3 = new ArrayList<>();
-			bc3.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionOne")
-					.replace("%displayname%", bm.getDisplayBonusMalusName())));
+			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionOne")
+					.replace("%displayname%", bm.getDisplayBonusMalusName()),
+					HoverEvent.Action.SHOW_TEXT, String.join("~!~", bm.getExplanation())));
 			ArrayList<BonusMalusValue> bmv = BonusMalusValue.convert(
 					plugin.getMysqlHandler().getFullList(MysqlHandler.Type.BONUSMALUSVALUE, "`id` ASC",
 					"`bonus_malus_name` = ?", bm.getBonusMalusName()));
 			ArrayList<String> vlist = new ArrayList<>();
 			vlist.add(plugin.getYamlHandler().getLang().getString("CmdBoni.BaseValue")
-					.replace("%value%", String.valueOf(1.0)));
+					.replace("%value%", String.valueOf(d)));
 			for(BonusMalusValue bmvv : bmv)
 			{
 				StringBuilder sb = new StringBuilder();
@@ -171,21 +174,24 @@ public class ARGBoni extends ArgumentModule
 				}
 				vlist.add(sb.toString());
 			}
+			vlist.add(plugin.getYamlHandler().getLang().getString("CmdBoni.EndValue")
+					.replace("%start%", String.valueOf(d))
+					.replace("%value%", String.valueOf(dd))
+					.replace("%sum%", String.valueOf(sum))
+					.replace("%mul%", String.valueOf(mul)));
 			String value = "";
 			if(bm.isBooleanBonus())
 			{
-				value = d >= 1.0 
+				value = dd >= 1.0 
 						? plugin.getYamlHandler().getLang().getString("CmdBoni.True") 
 						: plugin.getYamlHandler().getLang().getString("CmdBoni.False");
 			} else
 			{
-				value = String.valueOf(d);
+				value = String.valueOf(dd);
 			}
 			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionTwo")
 					.replace("%value%", value),
 					HoverEvent.Action.SHOW_TEXT, String.join("~!~", vlist)));
-			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionThree"),
-					HoverEvent.Action.SHOW_TEXT, String.join("~!~", bm.getExplanation())));
 			bc.add(bc3);
 		}
 		for(ArrayList<BaseComponent> b : bc)

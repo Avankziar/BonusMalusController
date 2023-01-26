@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import main.java.me.avankziar.bmc.spigot.BMC;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalus;
+import main.java.me.avankziar.bmc.spigot.objects.BonusMalusBaseValue;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalusValue;
 
 public class MysqlHandler
@@ -16,7 +17,8 @@ public class MysqlHandler
 	public enum Type
 	{
 		BONUSMALUS("bmcBonusMalus", new BonusMalus()),
-		BONUSMALUSVALUE("bmcBonusMalusValue", new BonusMalusValue());
+		BONUSMALUSVALUE("bmcBonusMalusValue", new BonusMalusValue()),
+		BONUSMALUSBASEVALUE("bmcBonusMalusBaseValue", new BonusMalusBaseValue());
 		
 		private Type(String value, Object object)
 		{

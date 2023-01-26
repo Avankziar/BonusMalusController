@@ -97,9 +97,6 @@ public class ARGAdd extends ArgumentModule
 		if(MatchApi.isLong(dur))
 		{
 			duration = Long.parseLong(dur);
-			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoNumber")
-					.replace("%value%", dur)));
-			return;
 		} else
 		{
 			duration = TimeHandler.getRepeatingTimeShort(dur);

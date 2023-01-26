@@ -338,10 +338,18 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&e===&fBoni/Mali &6von &c%player%&f, Seite %page%&e===",
 						"&e===&fBoni/Mali &6from &c%player%&f, page %page%&e==="}));
-		languageKeys.put("Cmd.LineTwo", 
+		languageKeys.put("CmdBoni.LineTwo", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&fAlle Werte wurde mit einem BasisWert von 1.0 berechnet!",
-						"&fAll values were calculated with a base value of 1.0!"}));
+						"&7Die Werte, die zuletzt bekannt werden, werden so genommen. Alle anderen werden mit Basiswert von 1.0 berechnet!",
+						"&7The values that become known last are taken so. All others are calculated with a base value of 1.0!"}));
+		languageKeys.put("CmdBoni.LineThree", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&7Es wird berechnet wie folgt:",
+						"&7It is calculated as follows:"}));
+		languageKeys.put("CmdBoni.LineFour", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&f(Basiswert + alle additiven Werte) * alle multiplikativen Werte",
+						"&f(base value + all additive values) * all multiplicative values"}));
 		languageKeys.put("CmdBoni.BonusMalusDescriptionOne", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%displayname%&r: ",
@@ -350,10 +358,6 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%value% ",
 						"%value% "}));
-		languageKeys.put("CmdBoni.BonusMalusDescriptionThree", 
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&6Erklärungshover",
-						"&6Erklärungshover"}));
 		languageKeys.put("CmdBoni.True", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&a✔",
@@ -364,8 +368,12 @@ public class YamlManager
 						"&c✖"}));
 		languageKeys.put("CmdBoni.BaseValue", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&#fc9303BaseWert: &r%value%",
+						"&#fc9303Basewert: &r%value%",
 						"&#fc9303Basevalue: &r%value%"}));
+		languageKeys.put("CmdBoni.EndValue", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&#d66400Endwert: &r%value% = (%start% + %sum%) * %mul%",
+						"&#d66400Endvalue: &r%value% = (%start% + %sum%) * %mul%"}));
 		languageKeys.put("CmdAdd.IsNotRegistered", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&cDer Bonus/Malus ist nicht registriert!",
@@ -384,15 +392,23 @@ public class YamlManager
 						"&e===&fRegistered Boni/Mali, page %page%, totalamount: %amount%&e==="}));
 		languageKeys.put("CmdRegistered.BonusMalusDescriptionOne", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"%displayname%&r: ",
-						"%displayname%&r: "}));
+						"%displayname% ",
+						"%displayname% "}));
 		languageKeys.put("CmdRegistered.BonusMalusDescriptionTwo", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&6Erklärungshover",
-						"&6Erklärungshover"}));
+						"&bBonus/Malus Name: &f%bonusmalus%~!~&9Anzahl permanente Boni/Mali aller Spieler: &f%permcount%~!~&dAnzahl temporäre Boni/Mali Spieler: &f%tempcount%~!~&7Erklärung:~!~&f%explanation%",
+						"&bBonus/Malus Name: &f%bonusmalus%~!~&9Number of permanent bonus/malus of all players: &f%permcount%~!~&dNumber of temporary bonus/malus players: &f%tempcount%~!~&7Explanation:~!~&f%explanation%"}));
+		languageKeys.put("CmdRegistered.Add", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&a☑~click@SUGGEST_COMMAND@%cmd%+%bm%+<Spieler>+<global/server:servername/world:servername:worldname>+<Wert>+<ADDITION/MULTIPLICATION>+<0/dd-HH:mm>+<Grund...>~hover@SHOW_TEXT@&eKlicke+hier+zum+hinzufügen+eines+Boni/Mali+für+einen+Spieler!",
+						"&a☑~click@SUGGEST_COMMAND@%cmd%+%bm%+<player>+<global/server:servername/world:servername:worldname>+<value>+<ADDITION/MULTIPLICATION>+<0/dd-HH:mm>+<reason...>~hover@SHOW_TEXT@&eClick+here+to+add+a+bonus/mali+for+a+player!"}));
+		languageKeys.put("CmdRegistered.Remove", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&c〼~click@SUGGEST_COMMAND@%cmd%+%bm%+<Spieler>+<Grund...>~hover@SHOW_TEXT@&eKlicke+hier+zum+entfernen+eines+Boni/Mali+für+einen+Spieler!",
+						"&c〼~click@SUGGEST_COMMAND@%cmd%+%bm%+<player>+<reason...>~hover@SHOW_TEXT@&eClick+here+to+remove+a+bonus/mali+for+a+player!"}));
 		languageKeys.put("CmdRemove.Remove", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDer Spieler &f%player% &ehat die &f%count% &eBonus/Malus &f%bm% &emit dem %f%reason% &cverloren!",
-						"&eThe player &f%player% &ehas &clost &ethe &f%count% &eBonus/Malus &f%bm% &with the %f%reason%&e!"}));		
+						"&eDer Spieler &f%player% &ehat die &f%count% &eBonus/Malus &f%bm% &emit dem &f%reason% &cverloren!",
+						"&eThe player &f%player% &ehas &clost &ethe &f%count% &eBonus/Malus &f%bm% &ewith the &f%reason%&e!"}));		
 	}
 }

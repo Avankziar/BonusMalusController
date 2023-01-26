@@ -129,6 +129,10 @@ public class MysqlSetup
 		{
 			return false;
 		}
+		if(!setupDatabaseIII())
+		{
+			return false;
+		}
 		return true;
 	}
 	
@@ -157,6 +161,17 @@ public class MysqlSetup
 		+ " server text,"
 		+ " world text,"
 		+ " duration BIGINT);";
+		baseSetup(data);
+		return true;
+	}
+	
+	public boolean setupDatabaseIII() 
+	{
+		String data = "CREATE TABLE IF NOT EXISTS `" + MysqlHandler.Type.BONUSMALUSBASEVALUE.getValue()
+		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
+		+ " player_uuid char(36) NOT NULL,"
+		+ " bonus_malus_name text NOT NULL,"
+		+ " last_base_value double NOT NULL);";
 		baseSetup(data);
 		return true;
 	}

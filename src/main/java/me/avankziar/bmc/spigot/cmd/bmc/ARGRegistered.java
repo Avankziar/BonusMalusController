@@ -12,6 +12,9 @@ import main.java.me.avankziar.bmc.spigot.assistance.MatchApi;
 import main.java.me.avankziar.bmc.spigot.cmd.BMCCmdExecutor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
+import main.java.me.avankziar.bmc.spigot.cmdtree.CommandExecuteType;
+import main.java.me.avankziar.bmc.spigot.cmdtree.CommandSuggest;
+import main.java.me.avankziar.bmc.spigot.database.MysqlHandler;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalus;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -34,31 +37,23 @@ public class ARGRegistered extends ArgumentModule
 	{
 		Player player = (Player) sender;
 		int page = 0;
-		if(args.length >= 1 && MatchApi.isInteger(args[0]))
+		if(args.length >= 2 && MatchApi.isInteger(args[1]))
 		{
-			page = Integer.parseInt(args[0]);
+			page = Integer.parseInt(args[1]);
 		}
 		ArrayList<BonusMalus> rg = plugin.getBonusMalusProvider().getRegisteredBM();
 		ArrayList<BonusMalus> map = new ArrayList<>();
-		int i = page * 10;
-		int j = 0;
-		int end = i + 10;
-		for(BonusMalus bm : rg)
+		int end = page * 10 + 9;
+		for(int i = page * 10; i < rg.size(); i++)
 		{
-			if(i != j)
-			{
-				j++;
-				continue;
-			}
+			BonusMalus bm = rg.get(i);
 			map.add(bm);
-			i++;
-			j++;
 			if(i >= end)
 			{
 				break;
 			}
 		}
-		boolean lastpage = rg.size()-10 < i;
+		boolean lastpage = rg.size()-9 < page * 10;
 		if(map.isEmpty())
 		{
 			player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("PlayerHasNoBonus")));
@@ -72,11 +67,26 @@ public class ARGRegistered extends ArgumentModule
 		bc.add(bc1);
 		for(BonusMalus bm : map)
 		{
+			int permcount = plugin.getMysqlHandler().getCount(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`bonus_malus_name` = ? AND `duration` < 0", bm.getBonusMalusName());
+			int tempcount = plugin.getMysqlHandler().getCount(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`bonus_malus_name` = ? AND `duration` > 0", bm.getBonusMalusName());
 			ArrayList<BaseComponent> bc3 = new ArrayList<>();
-			bc3.add(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("CmdRegistered.BonusMalusDescriptionOne")
-					.replace("%displayname%", bm.getDisplayBonusMalusName())));
-			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdRegistered.BonusMalusDescriptionTwo"),
-					HoverEvent.Action.SHOW_TEXT, String.join("~!~", bm.getExplanation())));
+			bc3.add(ChatApi.generateTextComponent(plugin.getYamlHandler().getLang().getString("CmdRegistered.Add")
+					.replace("%cmd%", CommandSuggest.get(CommandExecuteType.BMC_ADD).strip().replace(" ", "+"))
+					.replace("%bm%", bm.getBonusMalusName())));
+			bc3.add(ChatApi.generateTextComponent(plugin.getYamlHandler().getLang().getString("CmdRegistered.Remove")
+					.replace("%cmd%", CommandSuggest.get(CommandExecuteType.BMC_REMOVE).strip().replace(" ", "+"))
+					.replace("%bm%", bm.getBonusMalusName())));			
+			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdRegistered.BonusMalusDescriptionOne")
+					.replace("%displayname%", bm.getDisplayBonusMalusName()),
+							HoverEvent.Action.SHOW_TEXT, 
+							plugin.getYamlHandler().getLang().getString("CmdRegistered.BonusMalusDescriptionTwo")
+							.replace("%bonusmalus%", bm.getBonusMalusName())
+							.replace("%permcount%", String.valueOf(permcount))
+							.replace("%tempcount%", String.valueOf(tempcount))
+							.replace("%explanation%", String.join("~!~", bm.getExplanation()))
+							));
 			bc.add(bc3);
 		}
 		for(ArrayList<BaseComponent> b : bc)
@@ -85,6 +95,6 @@ public class ARGRegistered extends ArgumentModule
 			tc.setExtra(b);
 			player.spigot().sendMessage(tc);
 		}
-		BMCCmdExecutor.pastNextPage(player, page, lastpage, ac.getCommandString());
+		BMCCmdExecutor.pastNextPage(player, page, lastpage, ac.getCommandString().strip());
 	}
 }

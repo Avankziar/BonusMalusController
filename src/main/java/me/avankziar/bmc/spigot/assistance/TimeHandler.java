@@ -179,7 +179,7 @@ public class TimeHandler
 			return 0;
 		}
 		int d = Integer.parseInt(a[0]);
-		String[] b = a[3].split(":");
+		String[] b = a[1].split(":");
 		if(!MatchApi.isInteger(b[0]))
 		{
 			return 0;
