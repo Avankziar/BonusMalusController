@@ -143,7 +143,7 @@ public class ARGBoni extends ArgumentModule
 			final double d = plugin.getBonusMalusProvider().getLastBaseValue(uuid, bme.getValue().doubleValue(),
 					bm.getBonusMalusName(), server, world);
 			final double sum = plugin.getBonusMalusProvider().getSumValue(uuid, bm.getBonusMalusName(), server, world);
-			final double mul = plugin.getBonusMalusProvider().getMulValue(uuid, bm.getBonusMalusName(), server, world);
+			final double mul = plugin.getBonusMalusProvider().getMulltiplyValue(uuid, bm.getBonusMalusName(), server, world);
 			final double dd = (d + sum) * mul; 
 			ArrayList<BaseComponent> bc3 = new ArrayList<>();
 			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionOne")
@@ -160,10 +160,22 @@ public class ARGBoni extends ArgumentModule
 				StringBuilder sb = new StringBuilder();
 				if(bmvv.getValueType() == BonusMalusValueType.ADDITION)
 				{
-					sb.append("&#AAAAAA(+) &r");
+					if(bmvv.getValue() >= 0)
+					{
+						sb.append("&#60ec4b(+) &r");
+					} else
+					{
+						sb.append("&#eb2424(+) &r");
+					}
 				} else
 				{
-					sb.append("&#6D6D6D(x) &r");
+					if(bmvv.getValue() >= 1.0)
+					{
+						sb.append("&#60ec4b(x) &r");
+					} else
+					{
+						sb.append("&#eb2424(x) &r");
+					}
 				}
 				sb.append("'"+bmvv.getValue()+"'");
 				sb.append(" >> '"+bmvv.getReason()+"'");

@@ -158,7 +158,7 @@ public class BMC extends JavaPlugin
 		
 		TabCompletion tab = new TabCompletion(plugin);
 		
-		ArgumentConstructor add = new ArgumentConstructor(CommandExecuteType.BMC_ADD, "bmc_add", 0, 6, 999, true, null);
+		ArgumentConstructor add = new ArgumentConstructor(CommandExecuteType.BMC_ADD, "bmc_add", 0, 7, 999, true, null);
 		new ARGAdd(add);
 		ArgumentConstructor boni = new ArgumentConstructor(CommandExecuteType.BMC_BONI, "bmc_boni", 0, 0, 3, true, null);
 		new ARGBoni(boni);

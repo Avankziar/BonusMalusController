@@ -158,7 +158,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 		return d;
 	}
 	
-	public double getMulValue(UUID uuid, String bonusMalusName, String server, String world)
+	public double getMulltiplyValue(UUID uuid, String bonusMalusName, String server, String world)
 	{
 		double d = 0.0;
 		if(server != null)
@@ -324,23 +324,21 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	{
 		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
 				"`player_uuid` = ?", uuid.toString());
-		quit(uuid);
+		update();
 	}
 	
 	public void remove(UUID uuid, String reason)
 	{
 		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
 				"`player_uuid` = ? AND `reason` = ?", uuid.toString(), reason);
-		quit(uuid);
-		join(uuid);
+		update();
 	}
 	
 	public void remove(UUID uuid, String bonusMalusName, String reason)
 	{
 		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
 				"`player_uuid` = ? AND `bonus_malus_name` = ? AND `reason` = ?", uuid.toString(), bonusMalusName, reason);
-		quit(uuid);
-		join(uuid);
+		update();
 	}
 	
 	public void remove(String reason)
@@ -366,6 +364,22 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	public boolean hasBonusMalus(UUID uuid, String bonusMalusName, String server, String world)
 	{
 		if(server != null && world != null)
+		{
+			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ?"
+					, uuid.toString(), bonusMalusName, server, world);
+		} else if(server != null && world == null)
+		{
+			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ? AND `world` = ?"
+					, uuid.toString(), bonusMalusName, server);
+		}
+		return hasBonusMalus(uuid, bonusMalusName);
+	}
+	
+	public boolean hasBonusMalus(UUID uuid, String bonusMalusName, String internReason, String server, String world)
+	{
+		if(server != null && world != null) //TODO
 		{
 			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
 					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ?"
@@ -431,7 +445,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 		{
 			return baseValue;
 		}
-		return (baseValue + getSumValue(uuid, bonusMalusName, server, world)) * getMulValue(uuid, bonusMalusName, server, world);
+		return (baseValue + getSumValue(uuid, bonusMalusName, server, world)) * getMulltiplyValue(uuid, bonusMalusName, server, world);
 	}
 	
 	public boolean getResult(UUID uuid, boolean permissionOutput, String bonusMalusName)
@@ -446,33 +460,34 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			return permissionOutput;
 		}
 		double r = ((permissionOutput ? 1.0 : 0.0) + getSumValue(uuid, bonusMalusName, server, world))
-					* getMulValue(uuid, bonusMalusName, server, world);
+					* getMulltiplyValue(uuid, bonusMalusName, server, world);
 		return r >= 1.0 ? true : false;
 	}
 	
 	public void addAdditionFactor(UUID uuid, String bonusMalusName,
-			double value, String reason,
+			double value, String internReason, String displayReason,
 			String server, String world,
 			Long duration)
 	{
-		addFactor(uuid, bonusMalusName, value, reason, server, world, duration, BonusMalusValueType.ADDITION);
+		addFactor(uuid, bonusMalusName, value, internReason, displayReason, server, world, duration, BonusMalusValueType.ADDITION);
 	}
 	
 	public void addMultiplicationFactor(UUID uuid, String bonusMalusName,
-			double value, String reason,
+			double value, String internReason, String displayReason,
 			String server, String world,
 			Long duration)
 	{
-		addFactor(uuid, bonusMalusName, value, reason, server, world, duration, BonusMalusValueType.MULTIPLICATION);
+		addFactor(uuid, bonusMalusName, value, internReason, displayReason, server, world, duration, BonusMalusValueType.MULTIPLICATION);
 	}
 	
 	private void addFactor(UUID uuid, String bonusMalusName,
-			double value, String reason,
+			double value, String internReason, String displayReason,
 			String server, String world,
 			Long duration, BonusMalusValueType bmvt)
 	{
 		BonusMalusValue bmv = new BonusMalusValue(uuid, bonusMalusName, bmvt,
-				value, reason, server, world, duration != null ? (duration.longValue() > 0 ? duration.longValue()+System.currentTimeMillis() : -1) : -1);
+				value, internReason, server, world,
+				duration != null ? (duration.longValue() > 0 ? duration.longValue()+System.currentTimeMillis() : -1) : -1);
 		plugin.getMysqlHandler().create(MysqlHandler.Type.BONUSMALUSVALUE, bmv);
 		update(uuid);
 	}

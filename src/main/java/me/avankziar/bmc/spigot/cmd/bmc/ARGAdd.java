@@ -36,6 +36,7 @@ public class ARGAdd extends ArgumentModule
 		double d = 0.0;
 		String bmvtValue = args[5];
 		String dur = args[6];
+		String internReason = args[7];
 		long duration = -1;
 		String reason = "";
 		BonusMalusValueType bmvt = BonusMalusValueType.ADDITION;
@@ -105,7 +106,7 @@ public class ARGAdd extends ArgumentModule
 		{
 			duration = -1;
 		}
-		for (int i = 7; i < args.length; i++) 
+		for (int i = 8; i < args.length; i++) 
         {
 			reason += args[i];
 			if(i < (args.length-1))
@@ -119,10 +120,10 @@ public class ARGAdd extends ArgumentModule
 		}
 		if(bmvt == BonusMalusValueType.ADDITION)
 		{
-			plugin.getBonusMalusProvider().addAdditionFactor(uuid, bonusmalus, d, reason, server, world, duration);
+			plugin.getBonusMalusProvider().addAdditionFactor(uuid, bonusmalus, d, internReason, reason, server, world, duration);
 		} else
 		{
-			plugin.getBonusMalusProvider().addMultiplicationFactor(uuid, bonusmalus, d, reason, server, world, duration);
+			plugin.getBonusMalusProvider().addMultiplicationFactor(uuid, bonusmalus, d, reason, internReason, server, world, duration);
 		}
 		if(duration < 0)
 		{
@@ -132,6 +133,7 @@ public class ARGAdd extends ArgumentModule
 					.replace("%type%", type)
 					.replace("%formula%", bmvt.toString())
 					.replace("%value%", value)
+					.replace("%internreason%", internReason)
 					.replace("%reason%", reason)
 					));
 		} else
@@ -143,6 +145,7 @@ public class ARGAdd extends ArgumentModule
 					.replace("%formula%", bmvt.toString())
 					.replace("%value%", value)
 					.replace("%duration%", TimeHandler.getRepeatingTime(duration, "dd-HH:mm"))
+					.replace("%internreason%", internReason)
 					.replace("%reason%", reason)
 					));
 		}

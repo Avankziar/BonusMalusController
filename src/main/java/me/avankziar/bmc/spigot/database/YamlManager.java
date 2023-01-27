@@ -171,7 +171,7 @@ public class YamlManager
 		String perm = "bmc.cmd";		
 		argumentInput(path+"_add", "add", perm,
 				"/bmc add <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...>", "/bmc add ", false,
-				"&c/bmc add <BonusMalus> <Spieler> <global/server:servername/world:servername:weltname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <Grund...> &f| Fügt dem angegeben Spieler einen Bonus/Malus hinzu.",
+				"&c/bmc add <BonusMalus> <Spieler> <global/server:servername/world:servername:weltname> <Wert> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <Grund...> &f| Fügt dem angegeben Spieler einen Bonus/Malus hinzu.",
 				"&c/bmc add <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...> &f| Adds a bonus/penalty to the specified player.",
 				"&bBefehlsrecht für &f/bmc add",
 				"&bCommandright for &f/bmc add",
@@ -380,12 +380,12 @@ public class YamlManager
 						"&cThe bonus/malus is not registered!"}));
 		languageKeys.put("CmdAdd.AddedPermanent", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDer Spieler &f%player% &ehat permanent den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %reason%",
-						"&eThe player &f%player% &ehas permanently received the bonus/penalty &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %reason%"}));
+						"&eDer Spieler &f%player% &ehat permanent den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %internreason% | %reason%",
+						"&eThe player &f%player% &ehas permanently received the bonus/penalty &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %internreason% | %reason%"}));
 		languageKeys.put("CmdAdd.AddedTemporary", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDer Spieler &f%player% &ehat den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %duration% | %reason%",
-						"&eThe player &f%player% &ehas received the bonus/malus &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %duration% | %reason%"}));
+						"&eDer Spieler &f%player% &ehat den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %duration% | %internreason% | %reason%",
+						"&eThe player &f%player% &ehas received the bonus/malus &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %duration% | %internreason% | %reason%"}));
 		languageKeys.put("CmdRegistered.Headline", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&e===&fRegistrierte Boni/Mali, Seite %page%, GesamtAnzahl: %amount%&e===",
