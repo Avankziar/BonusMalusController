@@ -39,6 +39,7 @@ import main.java.me.avankziar.bmc.spigot.database.MysqlHandler;
 import main.java.me.avankziar.bmc.spigot.database.MysqlSetup;
 import main.java.me.avankziar.bmc.spigot.database.YamlHandler;
 import main.java.me.avankziar.bmc.spigot.database.YamlManager;
+import main.java.me.avankziar.bmc.spigot.handler.ConfigHandler;
 import main.java.me.avankziar.bmc.spigot.ifh.BonusMalusProvider;
 import main.java.me.avankziar.bmc.spigot.listener.JoinQuitListener;
 import main.java.me.avankziar.ifh.general.condition.Condition;
@@ -366,6 +367,10 @@ public class BMC extends JavaPlugin
 	
 	public void setupIFHCondition()
 	{
+		if(!new ConfigHandler().isMechanicConditionEnabled())
+		{
+			return;
+		}
 		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
 	    {
 	    	return;
