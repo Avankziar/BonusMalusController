@@ -15,18 +15,16 @@ public class BonusMalus implements MysqlHandable
 {
 	private String bonusMalusName;
 	private String displayBonusMalusName;
-	private boolean isBooleanBonus; //Define if the bonus/malus as boolean understood is.
 	private BonusMalusType bonusMalusType;
 	private ArrayList<String> explanation;
 	
 	public BonusMalus(){}
 	
 	public BonusMalus(String bonusMalusName, String displayBonusMalusName,
-			boolean isBooleanBonus, BonusMalusType bonusMalusType, String[] explanation)
+			BonusMalusType bonusMalusType, String[] explanation)
 	{
 		setBonusMalusName(bonusMalusName);
 		setDisplayBonusMalusName(displayBonusMalusName);
-		setBooleanBonus(isBooleanBonus);
 		setBonusMalusType(bonusMalusType);
 		ArrayList<String> ex = new ArrayList<>();
 		if(explanation != null)
@@ -59,16 +57,6 @@ public class BonusMalus implements MysqlHandable
 		this.displayBonusMalusName = displayBonusMalusName;
 	}
 
-	public boolean isBooleanBonus()
-	{
-		return isBooleanBonus;
-	}
-
-	public void setBooleanBonus(boolean isBooleanBonus)
-	{
-		this.isBooleanBonus = isBooleanBonus;
-	}
-
 	public BonusMalusType getBonusMalusType()
 	{
 		return bonusMalusType;
@@ -95,7 +83,7 @@ public class BonusMalus implements MysqlHandable
 		try
 		{
 			String sql = "INSERT INTO `" + tablename
-					+ "`(`bonus_malus_name`, `display_name`, `is_boolean_bonus`,"
+					+ "`(`bonus_malus_name`, `display_name`,"
 					+ " `bonus_malus_type`, `explanation`) " 
 					+ "VALUES("
 					+ "?, ?, ?, "
@@ -103,9 +91,8 @@ public class BonusMalus implements MysqlHandable
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, bonusMalusName);
 	        ps.setString(2, displayBonusMalusName);
-	        ps.setBoolean(3, isBooleanBonus);
-	        ps.setString(4, bonusMalusType.toString());
-	        ps.setString(5, String.join("~!~", explanation));
+	        ps.setString(3, bonusMalusType.toString());
+	        ps.setString(4, String.join("~!~", explanation));
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
 	        return true;
@@ -122,16 +109,15 @@ public class BonusMalus implements MysqlHandable
 		try
 		{
 			String sql = "UPDATE `" + tablename
-				+ "` SET `bonus_malus_name` = ?, `display_name` = ?, `is_boolean_bonus` = ?, `bonus_malus_type` = ?,"
+				+ "` SET `bonus_malus_name` = ?, `display_name` = ?, `bonus_malus_type` = ?,"
 				+ " `explanation` = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, bonusMalusName);
 	        ps.setString(2, displayBonusMalusName);
-	        ps.setBoolean(3, isBooleanBonus);
-	        ps.setString(4, bonusMalusType.toString());
-	        ps.setString(5, String.join("~!~", explanation));
-			int i = 6;
+	        ps.setString(3, bonusMalusType.toString());
+	        ps.setString(4, String.join("~!~", explanation));
+			int i = 5;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -171,7 +157,6 @@ public class BonusMalus implements MysqlHandable
 				al.add(
 						new BonusMalus(rs.getString("bonus_malus_name"),
 						rs.getString("display_name"),
-						rs.getBoolean("is_boolean_bonus"),
 						BonusMalusType.valueOf(rs.getString("bonus_malus_type")),
 						rs.getString("explanation").split("~!~")));
 			}

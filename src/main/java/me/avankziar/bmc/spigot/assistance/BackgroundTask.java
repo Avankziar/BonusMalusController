@@ -43,7 +43,7 @@ public class BackgroundTask
 						plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
 								"`player_uuid` = ? AND `duration` > ? AND duration < ?",
 								uuid.toString(), 0, now);
-						plugin.getBonusMalusProvider().update(uuid);
+						plugin.getBonusMalus().update(uuid);
 					}					
 				}
 			}

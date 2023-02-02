@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import main.java.me.avankziar.bmc.spigot.cbm.Bypass;
 import main.java.me.avankziar.bmc.spigot.database.Language.ISO639_2B;
-import main.java.me.avankziar.bmc.spigot.permission.Bypass;
 
 public class YamlManager
 {
@@ -21,6 +21,7 @@ public class YamlManager
 	private static LinkedHashMap<String, Language> configSpigotKeys = new LinkedHashMap<>();
 	private static LinkedHashMap<String, Language> commandsKeys = new LinkedHashMap<>();
 	private static LinkedHashMap<String, Language> languageKeys = new LinkedHashMap<>();
+	private static LinkedHashMap<String, Language> cbmlanguageKeys = new LinkedHashMap<>();
 	/*
 	 * Here are mutiplefiles in one "double" map. The first String key is the filename
 	 * So all filename muss be predefine. For example in the config.
@@ -32,6 +33,7 @@ public class YamlManager
 		initConfig();
 		initCommands();
 		initLanguage();
+		initConditionBonusMalusLanguage();
 	}
 	
 	public ISO639_2B getLanguageType()
@@ -62,6 +64,11 @@ public class YamlManager
 	public LinkedHashMap<String, Language> getLanguageKey()
 	{
 		return languageKeys;
+	}
+	
+	public LinkedHashMap<String, Language> getConditionBonusMalusLanguageKey()
+	{
+		return cbmlanguageKeys;
 	}
 	
 	public LinkedHashMap<String, LinkedHashMap<String, Language>> getGUIKey()
@@ -150,6 +157,11 @@ public class YamlManager
 		configSpigotKeys.put("Mysql.Password"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				"not_0123456789"}));
+		
+		configSpigotKeys.put("EnableMechanic.Condition"
+				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
+				true}));
+		
 		configSpigotKeys.put("DeleteOldDataTask.RunInSeconds"
 				, new Language(new ISO639_2B[] {ISO639_2B.GER}, new Object[] {
 				60}));
@@ -170,9 +182,9 @@ public class YamlManager
 				"&eInfo page for all commands.");
 		String perm = "bmc.cmd";		
 		argumentInput(path+"_add", "add", perm,
-				"/bmc add <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...>", "/bmc add ", false,
-				"&c/bmc add <BonusMalus> <Spieler> <global/server:servername/world:servername:weltname> <Wert> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <Grund...> &f| Fügt dem angegeben Spieler einen Bonus/Malus hinzu.",
-				"&c/bmc add <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <reason...> &f| Adds a bonus/penalty to the specified player.",
+				"/bmc add <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <internreason> <reason...>", "/bmc add ", false,
+				"&c/bmc add <BonusMalus> <Spieler> <global/server:servername/world:servername:weltname> <Wert> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <interner Grung> <Grund...> &f| Fügt dem angegeben Spieler einen Bonus/Malus hinzu.",
+				"&c/bmc add <bonusmalus> <player> <global/server:servername/world:servername:worldname> <value> <ADDITION/MULTIPLICATION> <0/dd-HH:mm> <internreason> <reason...> &f| Adds a bonus/penalty to the specified player.",
 				"&bBefehlsrecht für &f/bmc add",
 				"&bCommandright for &f/bmc add",
 				"&eFügt dem angegeben Spieler einen Bonus/Malus hinzu.",
@@ -410,5 +422,21 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&eDer Spieler &f%player% &ehat die &f%count% &eBonus/Malus &f%bm% &emit dem &f%reason% &cverloren!",
 						"&eThe player &f%player% &ehas &clost &ethe &f%count% &eBonus/Malus &f%bm% &ewith the &f%reason%&e!"}));		
+	}
+	
+	public void initConditionBonusMalusLanguage() //INFO:BonusMalusLanguages
+	{
+		cbmlanguageKeys.put(Bypass.Permission.OTHERPLAYER.toString()+".Displayname",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eByasspermission für /bmc boni <Zahl> [Spieler]",
+						"&eBypasspermission for/bmc boni <number> [player]"}));
+		cbmlanguageKeys.put(Bypass.Permission.OTHERPLAYER.toString()+".Explanation",
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eByasspermission für",
+						"&eden Befehl /bmc boni um",
+						"&eBoni anderer Spieler zu sehen.",
+						"&eBypasspermission for",
+						"&ethe /bmc boni to see",
+						"&ebonuses of other players."}));
 	}
 }

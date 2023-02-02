@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -19,8 +20,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.bmc.spigot.assistance.BackgroundTask;
+import main.java.me.avankziar.bmc.spigot.cbm.Bypass;
 import main.java.me.avankziar.bmc.spigot.cmd.BMCCmdExecutor;
 import main.java.me.avankziar.bmc.spigot.cmd.TabCompletion;
 import main.java.me.avankziar.bmc.spigot.cmd.bmc.ARGAdd;
@@ -38,8 +41,7 @@ import main.java.me.avankziar.bmc.spigot.database.YamlHandler;
 import main.java.me.avankziar.bmc.spigot.database.YamlManager;
 import main.java.me.avankziar.bmc.spigot.ifh.BonusMalusProvider;
 import main.java.me.avankziar.bmc.spigot.listener.JoinQuitListener;
-import main.java.me.avankziar.bmc.spigot.permission.Bypass;
-import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusType;
+import main.java.me.avankziar.ifh.general.condition.Condition;
 import main.java.me.avankziar.ifh.spigot.administration.Administration;
 import main.java.me.avankziar.ifh.spigot.metrics.Metrics;
 
@@ -60,8 +62,9 @@ public class BMC extends JavaPlugin
 	
 	public static String infoCommand = "/";
 	
-	public Administration rootAConsumer;
-	public BonusMalusProvider bmProvider;
+	private Administration rootAConsumer;
+	private BonusMalusProvider bmProvider;
+	private Condition conditionConsumer;
 	
 	public void onEnable()
 	{
@@ -70,7 +73,7 @@ public class BMC extends JavaPlugin
 		
 		setupIFHAdministration();
 		
-		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=Base
+		//https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=BMC
 		log.info(" ██████╗ ███╗   ███╗ ██████╗ | API-Version: "+plugin.getDescription().getAPIVersion());
 		log.info(" ██╔══██╗████╗ ████║██╔════╝ | Author: "+plugin.getDescription().getAuthors().toString());
 		log.info(" ██████╔╝██╔████╔██║██║      | Plugin Website: "+plugin.getDescription().getWebsite());
@@ -101,6 +104,7 @@ public class BMC extends JavaPlugin
 		setupCommandTree();
 		setupListeners();
 		setupIFHProvider();
+		setupIFHConsumer();
 		setupBstats();
 	}
 	
@@ -326,28 +330,10 @@ public class BMC extends JavaPlugin
         this,
         ServicePriority.Normal);
     	log.info(pluginName + " detected InterfaceHub >>> BonusMalus.class is provided!");
-    	for(BaseConstructor bc : getCommandHelpList())
-		{
-			if(!bc.isPutUpCmdPermToBonusMalusSystem())
-			{
-				continue;
-			}
-			if(bmProvider.isRegistered(pluginName.toLowerCase()+":"+bc.getPath()))
-			{
-				continue;
-			}
-			String[] ex = {plugin.getYamlHandler().getCommands().getString(bc.getPath()+".Explanation")};
-			bmProvider.register(
-					pluginName.toLowerCase()+":"+bc.getPath(),
-					plugin.getYamlHandler().getCommands().getString(bc.getPath()+".Displayname", "Command "+bc.getName()),
-					true,
-					BonusMalusType.UP,
-					ex);
-		}
 		return false;
 	}
 	
-	public BonusMalusProvider getBonusMalusProvider()
+	public BonusMalusProvider getBonusMalus()
 	{
 		return bmProvider;
 	}
@@ -371,6 +357,86 @@ public class BMC extends JavaPlugin
 	public Administration getAdministration()
 	{
 		return rootAConsumer;
+	}
+	
+	public void setupIFHConsumer()
+	{
+		setupIFHCondition();
+	}
+	
+	public void setupIFHCondition()
+	{
+		if(!plugin.getServer().getPluginManager().isPluginEnabled("InterfaceHub")) 
+	    {
+	    	return;
+	    }
+        new BukkitRunnable()
+        {
+        	int i = 0;
+			@Override
+			public void run()
+			{
+				try
+				{
+					if(i == 20)
+				    {
+						cancel();
+				    	return;
+				    }
+				    RegisteredServiceProvider<main.java.me.avankziar.ifh.general.condition.Condition> rsp = 
+		                             getServer().getServicesManager().getRegistration(
+		                            		 main.java.me.avankziar.ifh.general.condition.Condition.class);
+				    if(rsp == null) 
+				    {
+				    	i++;
+				        return;
+				    }
+				    conditionConsumer = rsp.getProvider();
+				    log.info(pluginName + " detected InterfaceHub >>> Condition.class is consumed!");
+				    cancel();
+				} catch(NoClassDefFoundError e)
+				{
+					cancel();
+				}
+				if(getCondition() != null)
+				{
+					for(BaseConstructor bc : getCommandHelpList())
+					{
+						if(!bc.isPutUpCmdPermToConditionSystem())
+						{
+							continue;
+						}
+						if(getCondition().isRegistered(bc.getConditionPath()))
+						{
+							continue;
+						}
+						String[] ex = {plugin.getYamlHandler().getCommands().getString(bc.getPath()+".Explanation")};
+						getCondition().register(
+								bc.getConditionPath(),
+								plugin.getYamlHandler().getCommands().getString(bc.getPath()+".Displayname", "Command "+bc.getName()),
+								ex);
+					}
+					List<Bypass.Permission> list = new ArrayList<Bypass.Permission>(EnumSet.allOf(Bypass.Permission.class));
+					for(Bypass.Permission ept : list)
+					{
+						if(getCondition().isRegistered(ept.getCondition()))
+						{
+							continue;
+						}
+						List<String> lar = plugin.getYamlHandler().getCBMLang().getStringList(ept.toString()+".Explanation");
+						getCondition().register(
+								ept.getCondition(),
+								plugin.getYamlHandler().getCBMLang().getString(ept.toString()+".Displayname", ept.toString()),
+								lar.toArray(new String[lar.size()]));
+					}
+				}				
+			}
+        }.runTaskTimer(plugin, 0L, 20*2);
+	}
+	
+	public Condition getCondition()
+	{
+		return conditionConsumer;
 	}
 	
 	public void setupBstats()

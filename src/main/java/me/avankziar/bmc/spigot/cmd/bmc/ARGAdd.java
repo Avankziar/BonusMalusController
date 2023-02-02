@@ -40,7 +40,7 @@ public class ARGAdd extends ArgumentModule
 		long duration = -1;
 		String reason = "";
 		BonusMalusValueType bmvt = BonusMalusValueType.ADDITION;
-		if(!plugin.getBonusMalusProvider().isRegistered(bonusmalus))
+		if(!plugin.getBonusMalus().isRegistered(bonusmalus))
 		{
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAdd.IsNotRegistered")));
 			return;
@@ -120,10 +120,10 @@ public class ARGAdd extends ArgumentModule
 		}
 		if(bmvt == BonusMalusValueType.ADDITION)
 		{
-			plugin.getBonusMalusProvider().addAdditionFactor(uuid, bonusmalus, d, internReason, reason, server, world, duration);
+			plugin.getBonusMalus().addAdditionFactor(uuid, bonusmalus, d, internReason, reason, server, world, duration);
 		} else
 		{
-			plugin.getBonusMalusProvider().addMultiplicationFactor(uuid, bonusmalus, d, reason, internReason, server, world, duration);
+			plugin.getBonusMalus().addMultiplicationFactor(uuid, bonusmalus, d, reason, internReason, server, world, duration);
 		}
 		if(duration < 0)
 		{

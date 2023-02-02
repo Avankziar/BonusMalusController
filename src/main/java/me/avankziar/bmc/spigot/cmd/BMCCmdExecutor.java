@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.bmc.general.ChatApi;
 import main.java.me.avankziar.bmc.spigot.BMC;
 import main.java.me.avankziar.bmc.spigot.assistance.MatchApi;
+import main.java.me.avankziar.bmc.spigot.cbm.ConditionBonusMalus;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.bmc.spigot.cmdtree.BaseConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.CommandConstructor;
-import main.java.me.avankziar.bmc.spigot.permission.BonusMalusPermission;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -89,7 +89,7 @@ public class BMCCmdExecutor implements CommandExecutor
 						if (sender instanceof Player)
 						{
 							Player player = (Player) sender;
-							if(BonusMalusPermission.hasPermission(player, ac))
+							if(ConditionBonusMalus.hasPermission(player, ac))
 							{
 								ArgumentModule am = plugin.getArgumentMap().get(ac.getPath());
 								if(am != null)

@@ -4,6 +4,31 @@ import java.util.UUID;
 
 public class MatchApi
 {
+	public static boolean isBoolean(String boo)
+	{
+		if(boo == null)
+		{
+			return false;
+		}
+		if(boo.equalsIgnoreCase("true") || boo.equalsIgnoreCase("1")
+				|| boo.equalsIgnoreCase("false") || boo.equalsIgnoreCase("0"))
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	public static Boolean getBoolean(String boo)
+	{
+		if(boo.equalsIgnoreCase("true") || boo.equalsIgnoreCase("1"))
+		{
+			return true;
+		} else if(boo.equalsIgnoreCase("false") || boo.equalsIgnoreCase("0"))
+		{
+			return false;
+		}
+		return null;
+	}
 	
 	public static boolean isNumber(String numberstring)
 	{

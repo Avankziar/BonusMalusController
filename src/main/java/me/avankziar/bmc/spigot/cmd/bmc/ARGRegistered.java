@@ -41,7 +41,7 @@ public class ARGRegistered extends ArgumentModule
 		{
 			page = Integer.parseInt(args[1]);
 		}
-		ArrayList<BonusMalus> rg = plugin.getBonusMalusProvider().getRegisteredBM();
+		ArrayList<BonusMalus> rg = plugin.getBonusMalus().getRegisteredBM();
 		ArrayList<BonusMalus> map = new ArrayList<>();
 		int end = page * 10 + 9;
 		for(int i = page * 10; i < rg.size(); i++)

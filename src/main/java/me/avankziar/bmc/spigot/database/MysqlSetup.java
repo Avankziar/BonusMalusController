@@ -142,7 +142,6 @@ public class MysqlSetup
 		+ "` (id int AUTO_INCREMENT PRIMARY KEY,"
 		+ " bonus_malus_name text NOT NULL,"
 		+ " display_name text NOT NULL,"
-		+ " is_boolean_bonus boolean,"
 		+ " bonus_malus_type text,"
 		+ " explanation LONGTEXT);";
 		baseSetup(data);
@@ -157,7 +156,8 @@ public class MysqlSetup
 		+ " bonus_malus_name text NOT NULL,"
 		+ " bonus_malus_value_type text,"
 		+ " bonus_malus_value double NOT NULL,"
-		+ " reason text,"
+		+ " intern_reason text,"
+		+ " display_reason text,"
 		+ " server text,"
 		+ " world text,"
 		+ " duration BIGINT);";

@@ -19,7 +19,8 @@ public class BonusMalusValue implements MysqlHandable
 	private String bonusMalusName;
 	private BonusMalusValueType valueType;
 	private double value;
-	private String reason;
+	private String internReason;
+	private String displayReason;
 	private String server;
 	private String world;
 	private long duration;
@@ -27,28 +28,30 @@ public class BonusMalusValue implements MysqlHandable
 	public BonusMalusValue(){}
 	
 	public BonusMalusValue(int id, UUID uuid, String bonusMalusName, BonusMalusValueType valueType,
-			double value, String reason, String server, String world, long duration)
+			double value, String internReason, String displayReason, String server, String world, long duration)
 	{
 		setID(id);
 		setUuid(uuid);
 		setBonusMalusName(bonusMalusName);
 		setValueType(valueType);
 		setValue(value);
-		setReason(reason);
+		setInternReason(internReason);
+		setDisplayReason(displayReason);
 		setServer(server);
 		setWorld(world);
 		setDuration(duration);
 	}
 	
 	public BonusMalusValue(UUID uuid, String bonusMalusName, BonusMalusValueType valueType,
-			double value, String reason, String server, String world, long duration)
+			double value, String internReason, String displayReason, String server, String world, long duration)
 	{
 		setID(0);
 		setUuid(uuid);
 		setBonusMalusName(bonusMalusName);
 		setValueType(valueType);
 		setValue(value);
-		setReason(reason);
+		setInternReason(internReason);
+		setDisplayReason(displayReason);
 		setServer(server);
 		setWorld(world);
 		setDuration(duration);
@@ -104,14 +107,24 @@ public class BonusMalusValue implements MysqlHandable
 		this.value = value;
 	}
 
-	public String getReason()
+	public String getInternReason()
 	{
-		return reason;
+		return internReason;
 	}
 
-	public void setReason(String reason)
+	public void setInternReason(String internReason)
 	{
-		this.reason = reason;
+		this.internReason = internReason;
+	}
+
+	public String getDisplayReason()
+	{
+		return displayReason;
+	}
+
+	public void setDisplayReason(String displayReason)
+	{
+		this.displayReason = displayReason;
 	}
 
 	public String getServer()
@@ -150,20 +163,23 @@ public class BonusMalusValue implements MysqlHandable
 		try
 		{
 			String sql = "INSERT INTO `" + tablename
-					+ "`(`player_uuid`, `bonus_malus_name`, `bonus_malus_value_type`, `bonus_malus_value`, `reason`,"
+					+ "`(`player_uuid`, `bonus_malus_name`, `bonus_malus_value_type`, `bonus_malus_value`,"
+					+ " `intern_reason`, `display_reason`,"
 					+ " `server`, `world`, `duration`) " 
 					+ "VALUES("
-					+ "?, ?, ?, ?, ?, "
+					+ "?, ?, ?, ?, "
+					+ "?, ?, "
 					+ "?, ?, ?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, uuid.toString());
 	        ps.setString(2, bonusMalusName);
 	        ps.setString(3, valueType.toString());
 	        ps.setDouble(4, value);
-	        ps.setString(5, reason);
-	        ps.setString(6, server);
-	        ps.setString(7, world);
-	        ps.setLong(8, duration);
+	        ps.setString(5, internReason);
+	        ps.setString(6, displayReason);
+	        ps.setString(7, server);
+	        ps.setString(8, world);
+	        ps.setLong(9, duration);
 	        int i = ps.executeUpdate();
 	        MysqlHandler.addRows(MysqlHandler.QueryType.INSERT, i);
 	        return true;
@@ -180,7 +196,8 @@ public class BonusMalusValue implements MysqlHandable
 		try
 		{
 			String sql = "UPDATE `" + tablename
-				+ "` SET `player_uuid` = ?, `bonus_malus_name` = ?, `bonus_malus_value_type` = ?, `bonus_malus_value` = ?, `reason` = ?,"
+				+ "` SET `player_uuid` = ?, `bonus_malus_name` = ?, `bonus_malus_value_type` = ?, `bonus_malus_value` = ?,"
+				+ " `intern_reason` = ?, `display_reason` = ?,"
 				+ " `server` = ?, `world` = ?, `duration` = ?" 
 				+ " WHERE "+whereColumn;
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -188,11 +205,12 @@ public class BonusMalusValue implements MysqlHandable
 	        ps.setString(2, bonusMalusName);
 	        ps.setString(3, valueType.toString());
 	        ps.setDouble(4, value);
-	        ps.setString(5, reason);
-	        ps.setString(6, server);
-	        ps.setString(7, world);
-	        ps.setLong(8, duration);
-			int i = 9;
+	        ps.setString(5, internReason);
+	        ps.setString(6, displayReason);
+	        ps.setString(7, server);
+	        ps.setString(8, world);
+	        ps.setLong(9, duration);
+			int i = 10;
 			for(Object o : whereObject)
 			{
 				ps.setObject(i, o);
@@ -235,7 +253,8 @@ public class BonusMalusValue implements MysqlHandable
 								rs.getString("bonus_malus_name"),
 								BonusMalusValueType.valueOf(rs.getString("bonus_malus_value_type")),
 								rs.getDouble("bonus_malus_value"),
-								rs.getString("reason"),
+								rs.getString("intern_reason"),
+								rs.getString("display_reason"),
 								rs.getString("server"),
 								rs.getString("world"),
 								rs.getLong("duration")));

@@ -29,7 +29,7 @@ public class ARGRemove extends ArgumentModule
 		String bonusmalus = args[1];
 		String othername = args[2];
 		String reason = "";
-		if(!plugin.getBonusMalusProvider().isRegistered(bonusmalus))
+		if(!plugin.getBonusMalus().isRegistered(bonusmalus))
 		{
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAdd.IsNotRegistered")));
 			return;
@@ -55,7 +55,7 @@ public class ARGRemove extends ArgumentModule
 		}
 		final int count = plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
 				"`player_uuid` = ? AND `bonus_malus_name` = ? AND `reason` = ?", uuid.toString(), bonusmalus, reason);
-		plugin.getBonusMalusProvider().remove(uuid, bonusmalus, reason);
+		plugin.getBonusMalus().remove(uuid, bonusmalus, reason);
 		sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdRemove.Remove")
 				.replace("%bm%", bonusmalus)
 				.replace("%player%", othername)

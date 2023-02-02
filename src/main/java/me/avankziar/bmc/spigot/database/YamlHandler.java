@@ -27,6 +27,8 @@ public class YamlHandler
 	private String languages;
 	private File language = null;
 	private YamlConfiguration lang = new YamlConfiguration();
+	private File cbmlanguage = null;
+	private YamlConfiguration cbmlang = new YamlConfiguration();
 
 	public YamlHandler(BMC plugin)
 	{
@@ -47,6 +49,11 @@ public class YamlHandler
 	public YamlConfiguration getLang()
 	{
 		return lang;
+	}
+	
+	public YamlConfiguration getCBMLang()
+	{
+		return cbmlang;
 	}
 	
 	private YamlConfiguration loadYamlTask(File file, YamlConfiguration yaml)
@@ -247,6 +254,24 @@ public class YamlHandler
 			return false;
 		}
 		writeFile(language, lang, plugin.getYamlManager().getLanguageKey());
+		cbmlanguage = new File(directory.getPath(), "cbm_"+languageString+".yml");
+		if(!cbmlanguage.exists()) 
+		{
+			BMC.log.info("Create cbm_%lang%.yml...".replace("%lang%", languageString));
+			try(InputStream in = plugin.getResource("default.yml"))
+			{
+				Files.copy(in, cbmlanguage.toPath());
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		cbmlang = loadYamlTask(cbmlanguage, cbmlang);
+		if(cbmlang == null)
+		{
+			return false;
+		}
+		writeFile(cbmlanguage, cbmlang, plugin.getYamlManager().getConditionBonusMalusLanguageKey());
 		return true;
 	}
 }

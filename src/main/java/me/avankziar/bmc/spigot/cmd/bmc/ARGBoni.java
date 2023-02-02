@@ -15,14 +15,14 @@ import main.java.me.avankziar.bmc.general.ChatApi;
 import main.java.me.avankziar.bmc.spigot.BMC;
 import main.java.me.avankziar.bmc.spigot.assistance.MatchApi;
 import main.java.me.avankziar.bmc.spigot.assistance.TimeHandler;
+import main.java.me.avankziar.bmc.spigot.cbm.Bypass;
+import main.java.me.avankziar.bmc.spigot.cbm.Bypass.Permission;
 import main.java.me.avankziar.bmc.spigot.cmd.BMCCmdExecutor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.bmc.spigot.database.MysqlHandler;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalus;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalusValue;
-import main.java.me.avankziar.bmc.spigot.permission.Bypass;
-import main.java.me.avankziar.bmc.spigot.permission.Bypass.Permission;
 import main.java.me.avankziar.ifh.general.bonusmalus.BonusMalusValueType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -98,17 +98,17 @@ public class ARGBoni extends ArgumentModule
 				break;
 			}
 		}
-		ArrayList<BonusMalus> rg = plugin.getBonusMalusProvider().getRegisteredBM();
+		ArrayList<BonusMalus> rg = plugin.getBonusMalus().getRegisteredBM();
 		LinkedHashMap<BonusMalus, Double> map = new LinkedHashMap<>();
 		int end = page * 10 + 9;
 		for(int i = page * 10; i < rg.size(); i++)
 		{
 			BonusMalus bm = rg.get(i);
-			if(!plugin.getBonusMalusProvider().hasBonusMalus(uuid, bm.getBonusMalusName(), server, world))
+			if(!plugin.getBonusMalus().hasBonusMalus(uuid, bm.getBonusMalusName(), server, world))
 			{
 				continue;
 			}
-			map.put(bm, plugin.getBonusMalusProvider().getResult(uuid, 1.0, bm.getBonusMalusName(),
+			map.put(bm, plugin.getBonusMalus().getResult(uuid, 1.0, bm.getBonusMalusName(),
 					server, world));
 			if(i >= end)
 			{
@@ -140,10 +140,10 @@ public class ARGBoni extends ArgumentModule
 		for(Entry<BonusMalus, Double> bme : map.entrySet())
 		{
 			BonusMalus bm = bme.getKey();
-			final double d = plugin.getBonusMalusProvider().getLastBaseValue(uuid, bme.getValue().doubleValue(),
+			final double d = plugin.getBonusMalus().getLastBaseValue(uuid, bme.getValue().doubleValue(),
 					bm.getBonusMalusName(), server, world);
-			final double sum = plugin.getBonusMalusProvider().getSumValue(uuid, bm.getBonusMalusName(), server, world);
-			final double mul = plugin.getBonusMalusProvider().getMulltiplyValue(uuid, bm.getBonusMalusName(), server, world);
+			final double sum = plugin.getBonusMalus().getSumValue(uuid, bm.getBonusMalusName(), server, world);
+			final double mul = plugin.getBonusMalus().getMulltiplyValue(uuid, bm.getBonusMalusName(), server, world);
 			final double dd = (d + sum) * mul; 
 			ArrayList<BaseComponent> bc3 = new ArrayList<>();
 			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionOne")
@@ -178,7 +178,7 @@ public class ARGBoni extends ArgumentModule
 					}
 				}
 				sb.append("'"+bmvv.getValue()+"'");
-				sb.append(" >> '"+bmvv.getReason()+"'");
+				sb.append(" >> '"+bmvv.getDisplayReason()+"'");
 				if(bmvv.getDuration() > 0)
 				{
 					long dur = bmvv.getDuration()-System.currentTimeMillis();
@@ -191,16 +191,7 @@ public class ARGBoni extends ArgumentModule
 					.replace("%value%", String.valueOf(dd))
 					.replace("%sum%", String.valueOf(sum))
 					.replace("%mul%", String.valueOf(mul)));
-			String value = "";
-			if(bm.isBooleanBonus())
-			{
-				value = dd >= 1.0 
-						? plugin.getYamlHandler().getLang().getString("CmdBoni.True") 
-						: plugin.getYamlHandler().getLang().getString("CmdBoni.False");
-			} else
-			{
-				value = String.valueOf(dd);
-			}
+			String value = String.valueOf(dd);
 			bc3.add(ChatApi.hoverEvent(plugin.getYamlHandler().getLang().getString("CmdBoni.BonusMalusDescriptionTwo")
 					.replace("%value%", value),
 					HoverEvent.Action.SHOW_TEXT, String.join("~!~", vlist)));

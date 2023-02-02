@@ -21,13 +21,13 @@ public class JoinQuitListener implements Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		plugin.getBonusMalusProvider().join(event.getPlayer().getUniqueId());
+		plugin.getBonusMalus().join(event.getPlayer().getUniqueId());
 	}
 	
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event)
 	{
 		final UUID uuid = event.getPlayer().getUniqueId();
-		plugin.getBonusMalusProvider().quit(uuid);
+		plugin.getBonusMalus().quit(uuid);
 	}
 }
