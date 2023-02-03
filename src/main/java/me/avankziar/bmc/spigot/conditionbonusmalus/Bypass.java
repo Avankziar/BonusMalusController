@@ -1,4 +1,4 @@
-package main.java.me.avankziar.bmc.spigot.cbm;
+package main.java.me.avankziar.bmc.spigot.conditionbonusmalus;
 
 import java.util.LinkedHashMap;
 

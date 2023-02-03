@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import main.java.me.avankziar.bmc.spigot.cbm.Bypass;
+import main.java.me.avankziar.bmc.spigot.conditionbonusmalus.Bypass;
 import main.java.me.avankziar.bmc.spigot.database.Language.ISO639_2B;
 
 public class YamlManager

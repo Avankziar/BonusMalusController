@@ -23,7 +23,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import main.java.me.avankziar.bmc.spigot.assistance.BackgroundTask;
-import main.java.me.avankziar.bmc.spigot.cbm.Bypass;
 import main.java.me.avankziar.bmc.spigot.cmd.BMCCmdExecutor;
 import main.java.me.avankziar.bmc.spigot.cmd.TabCompletion;
 import main.java.me.avankziar.bmc.spigot.cmd.bmc.ARGAdd;
@@ -35,6 +34,7 @@ import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.bmc.spigot.cmdtree.BaseConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.CommandConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.CommandExecuteType;
+import main.java.me.avankziar.bmc.spigot.conditionbonusmalus.Bypass;
 import main.java.me.avankziar.bmc.spigot.database.MysqlHandler;
 import main.java.me.avankziar.bmc.spigot.database.MysqlSetup;
 import main.java.me.avankziar.bmc.spigot.database.YamlHandler;
