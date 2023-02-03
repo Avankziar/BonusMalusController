@@ -33,6 +33,23 @@ public class Bypass
 		//Here BonusMalus and CountPermission Things
 		;
 		
+		private boolean forPermission;
+		
+		Counter()
+		{
+			this.forPermission = true;
+		}
+		
+		Counter(boolean forPermission)
+		{
+			this.forPermission = forPermission;
+		}
+	
+		public boolean forPermission()
+		{
+			return this.forPermission;
+		}
+		
 		public String getBonusMalus()
 		{
 			return BaseConstructor.getPlugin().pluginName.toLowerCase()+"-"+this.toString().toLowerCase();
