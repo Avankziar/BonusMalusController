@@ -356,8 +356,7 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	
 	public boolean hasBonusMalus(UUID uuid, String bonusMalusName)
 	{
-		return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-				"`player_uuid` = ? AND `bonus_malus_name` = ?", uuid.toString(), bonusMalusName);
+		return hasBonusMalus(uuid, bonusMalusName, null, null);
 	}
 	
 	public boolean hasBonusMalus(UUID uuid, String bonusMalusName, String server, String world)
@@ -377,8 +376,11 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
 					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ? AND `world` = ?"
 					, uuid.toString(), bonusMalusName, server, world);
+		} else
+		{
+			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`player_uuid` = ? AND `bonus_malus_name` = ?", uuid.toString(), bonusMalusName);
 		}
-		return hasBonusMalus(uuid, bonusMalusName);
 	}
 	
 	public boolean hasBonusMalus(UUID uuid, String bonusMalusName, String internReason, String server, String world)
@@ -418,8 +420,10 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
 					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ? AND `world` = ?"
 					, uuid.toString(), bonusMalusName, server, world);
+		} else
+		{
+			return hasBonusMalus(uuid, bonusMalusName);
 		}
-		return hasBonusMalus(uuid, bonusMalusName);
 	}
 	
 	public double getLastBaseValue(final UUID uuid, final double baseValue, final String bonusMalusName, String server, String world)

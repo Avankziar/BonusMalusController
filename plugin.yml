@@ -6,3 +6,4 @@ api-version: 1.17
 description: A plugin to control and manage all bonus and malus for all kind of types.
 depend: [InterfaceHub]
 website: TBA
+prefix: BMC
