@@ -21,6 +21,16 @@ public class ConditionBonusMalus
 					bc.getConditionPath(),
 					BaseConstructor.getPlugin().getServername(),
 					player.getWorld().getName());
+			if(ss == null)
+			{
+				if(BaseConstructor.getPlugin().getYamlHandler().getConfig().getBoolean("Condition.ConditionOverrulePermission", false))
+				{
+					return false;
+				} else
+				{
+					return player.hasPermission(bc.getPermission());
+				}
+			}
 			int t = 0;
 			int f = 0;
 			for(String s : ss)
@@ -63,6 +73,16 @@ public class ConditionBonusMalus
 					bypassPermission.getCondition(),
 					BaseConstructor.getPlugin().getServername(),
 					player.getWorld().getName());
+			if(ss == null)
+			{
+				if(BaseConstructor.getPlugin().getYamlHandler().getConfig().getBoolean("Condition.ConditionOverrulePermission", false))
+				{
+					return false;
+				} else
+				{
+					return player.hasPermission(Bypass.get(bypassPermission));
+				}
+			}
 			int t = 0;
 			int f = 0;
 			for(String s : ss)

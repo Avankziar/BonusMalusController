@@ -53,7 +53,9 @@ public class ARGRemove extends ArgumentModule
 		{
 			reason = "/";
 		}
-		final int count = plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
+		final int count = plugin.getMysqlHandler().getCount(MysqlHandler.Type.BONUSMALUSVALUE,
+				"`player_uuid` = ? AND `bonus_malus_name` = ? AND `reason` = ?", uuid.toString(), bonusmalus, reason);
+		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
 				"`player_uuid` = ? AND `bonus_malus_name` = ? AND `reason` = ?", uuid.toString(), bonusmalus, reason);
 		plugin.getBonusMalus().remove(uuid, bonusmalus, reason);
 		sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdRemove.Remove")

@@ -414,8 +414,8 @@ public class YamlManager
 						"&c〼~click@SUGGEST_COMMAND@%cmd%+%bm%+<player>+<reason...>~hover@SHOW_TEXT@&eClick+here+to+remove+a+bonus/mali+for+a+player!"}));
 		languageKeys.put("CmdRemove.Remove", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDer Spieler &f%player% &ehat die &f%count% &eBonus/Malus &f%bm% &emit dem &f%reason% &cverloren!",
-						"&eThe player &f%player% &ehas &clost &ethe &f%count% &eBonus/Malus &f%bm% &ewith the &f%reason%&e!"}));		
+						"&eDer Spieler &f%player% &ehat die &f%count% &eBonus/Malus &f%bm% &emit dem Grund &f%reason% &cverloren!",
+						"&eThe player &f%player% &ehas &clost &ethe &f%count% &eBonus/Malus &f%bm% &ewith the reason &f%reason%&e!"}));		
 	}
 	
 	public void initConditionBonusMalusLanguage() //INFO:BonusMalusLanguages

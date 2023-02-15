@@ -87,7 +87,7 @@ public class BonusMalus implements MysqlHandable
 					+ " `bonus_malus_type`, `explanation`) " 
 					+ "VALUES("
 					+ "?, ?, ?, "
-					+ "?, ?)";
+					+ "?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 	        ps.setString(1, bonusMalusName);
 	        ps.setString(2, displayBonusMalusName);
