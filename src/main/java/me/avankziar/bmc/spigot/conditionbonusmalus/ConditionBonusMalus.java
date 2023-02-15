@@ -36,9 +36,18 @@ public class ConditionBonusMalus
 					}
 				}
 			}
-			if((t > 0 && t > f) || player.hasPermission(bc.getPermission()))
+			if(BaseConstructor.getPlugin().getYamlHandler().getConfig().getBoolean("Condition.ConditionOverrulePermission", false))
 			{
-				return true;
+				if((t > 0 && t > f))
+				{
+					return true;
+				}
+			} else
+			{
+				if((t > 0 && t > f) || player.hasPermission(bc.getPermission()))
+				{
+					return true;
+				}
 			}
 			return false;
 		}
@@ -69,9 +78,18 @@ public class ConditionBonusMalus
 					}
 				}
 			}
-			if((t > 0 && t > f) || player.hasPermission(Bypass.get(bypassPermission)))
+			if(BaseConstructor.getPlugin().getYamlHandler().getConfig().getBoolean("Condition.ConditionOverrulePermission", false))
 			{
-				return true;
+				if((t > 0 && t > f))
+				{
+					return true;
+				}
+			} else
+			{
+				if((t > 0 && t > f) || player.hasPermission(Bypass.get(bypassPermission)))
+				{
+					return true;
+				}
 			}
 			return false;
 		}
