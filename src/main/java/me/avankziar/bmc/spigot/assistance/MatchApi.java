@@ -10,8 +10,8 @@ public class MatchApi
 		{
 			return false;
 		}
-		if(boo.equalsIgnoreCase("true") || boo.equalsIgnoreCase("1")
-				|| boo.equalsIgnoreCase("false") || boo.equalsIgnoreCase("0"))
+		if(boo.equalsIgnoreCase("true")
+				|| boo.equalsIgnoreCase("false"))
 		{
 			return true;
 		}
@@ -20,10 +20,10 @@ public class MatchApi
 	
 	public static Boolean getBoolean(String boo)
 	{
-		if(boo.equalsIgnoreCase("true") || boo.equalsIgnoreCase("1"))
+		if(boo.equalsIgnoreCase("true"))
 		{
 			return true;
-		} else if(boo.equalsIgnoreCase("false") || boo.equalsIgnoreCase("0"))
+		} else if(boo.equalsIgnoreCase("false"))
 		{
 			return false;
 		}

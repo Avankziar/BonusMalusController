@@ -346,6 +346,18 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&cDer Spieler &f%player% &chat keine Boni oder Mali!",
 						"&cThe player &f%player% &chas no bonuses or maluses!"}));
+		languageKeys.put("CmdAdd.IsNotRegistered", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&cDer Bonus/Malus ist nicht registriert!",
+						"&cThe bonus/malus is not registered!"}));
+		languageKeys.put("CmdAdd.AddedPermanent", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDer Spieler &f%player% &ehat permanent den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %internreason% | %reason%",
+						"&eThe player &f%player% &ehas permanently received the bonus/penalty &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %internreason% | %reason%"}));
+		languageKeys.put("CmdAdd.AddedTemporary", 
+				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
+						"&eDer Spieler &f%player% &ehat den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %duration% | %internreason% | %reason%",
+						"&eThe player &f%player% &ehas received the bonus/malus &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %duration% | %internreason% | %reason%"}));
 		languageKeys.put("CmdBoni.Headline", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&e===&fBoni/Mali &6von &c%player%&f, Seite %page%&e===",
@@ -370,14 +382,6 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"%value% ",
 						"%value% "}));
-		languageKeys.put("CmdBoni.True", 
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&a✔",
-						"&a✔"}));
-		languageKeys.put("CmdBoni.False", 
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&c✖",
-						"&c✖"}));
 		languageKeys.put("CmdBoni.BaseValue", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&#fc9303Basewert: &r%value%",
@@ -386,18 +390,6 @@ public class YamlManager
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&#d66400Endwert: &r%value% = (%start% + %sum%) * %mul%",
 						"&#d66400Endvalue: &r%value% = (%start% + %sum%) * %mul%"}));
-		languageKeys.put("CmdAdd.IsNotRegistered", 
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&cDer Bonus/Malus ist nicht registriert!",
-						"&cThe bonus/malus is not registered!"}));
-		languageKeys.put("CmdAdd.AddedPermanent", 
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDer Spieler &f%player% &ehat permanent den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %internreason% | %reason%",
-						"&eThe player &f%player% &ehas permanently received the bonus/penalty &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %internreason% | %reason%"}));
-		languageKeys.put("CmdAdd.AddedTemporary", 
-				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
-						"&eDer Spieler &f%player% &ehat den Bonus/Malus &f%bm% &emit dem Wert &f%value% &eund den folgenden Werten erhalten: &f%type% | %formula% | %duration% | %internreason% | %reason%",
-						"&eThe player &f%player% &ehas received the bonus/malus &f%bm% &ewith the value &f%value% &eand the following values: &f%type% | %formula% | %duration% | %internreason% | %reason%"}));
 		languageKeys.put("CmdRegistered.Headline", 
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&e===&fRegistrierte Boni/Mali, Seite %page%, GesamtAnzahl: %amount%&e===",
@@ -429,7 +421,7 @@ public class YamlManager
 		cbmlanguageKeys.put(Bypass.Permission.OTHERPLAYER.toString()+".Displayname",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&eByasspermission für /bmc boni <Zahl> [Spieler]",
-						"&eBypasspermission for/bmc boni <number> [player]"}));
+						"&eBypasspermission for /bmc boni <number> [player]"}));
 		cbmlanguageKeys.put(Bypass.Permission.OTHERPLAYER.toString()+".Explanation",
 				new Language(new ISO639_2B[] {ISO639_2B.GER, ISO639_2B.ENG}, new Object[] {
 						"&eByasspermission für",

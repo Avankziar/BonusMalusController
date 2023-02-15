@@ -16,13 +16,27 @@ public class ConditionBonusMalus
 	{
 		if(BaseConstructor.getPlugin().getCondition() != null)
 		{
-			String t = BaseConstructor.getPlugin().getCondition().getConditionEntry(
+			String[] ss = BaseConstructor.getPlugin().getCondition().getConditionEntry(
 					player.getUniqueId(),
 					bc.getConditionPath(),
 					BaseConstructor.getPlugin().getServername(),
 					player.getWorld().getName());
-			if(MatchApi.isBoolean(t)
-					&& MatchApi.getBoolean(t).booleanValue() && player.hasPermission(bc.getPermission()))
+			int t = 0;
+			int f = 0;
+			for(String s : ss)
+			{
+				if(MatchApi.isBoolean(s))
+				{
+					if(MatchApi.getBoolean(s).booleanValue())
+					{
+						t++;
+					} else
+					{
+						f++;
+					}
+				}
+			}
+			if((t > 0 && t > f) || player.hasPermission(bc.getPermission()))
 			{
 				return true;
 			}
@@ -35,13 +49,27 @@ public class ConditionBonusMalus
 	{
 		if(BaseConstructor.getPlugin().getCondition() != null)
 		{
-			String t = BaseConstructor.getPlugin().getCondition().getConditionEntry(
+			String[] ss = BaseConstructor.getPlugin().getCondition().getConditionEntry(
 					player.getUniqueId(),
 					bypassPermission.getCondition(),
 					BaseConstructor.getPlugin().getServername(),
 					player.getWorld().getName());
-			if(MatchApi.isBoolean(t)
-					&& MatchApi.getBoolean(t).booleanValue() && player.hasPermission(Bypass.get(bypassPermission)))
+			int t = 0;
+			int f = 0;
+			for(String s : ss)
+			{
+				if(MatchApi.isBoolean(s))
+				{
+					if(MatchApi.getBoolean(s).booleanValue())
+					{
+						t++;
+					} else
+					{
+						f++;
+					}
+				}
+			}
+			if((t > 0 && t > f) || player.hasPermission(Bypass.get(bypassPermission)))
 			{
 				return true;
 			}

@@ -151,7 +151,7 @@ public class ARGBoni extends ArgumentModule
 					HoverEvent.Action.SHOW_TEXT, String.join("~!~", bm.getExplanation())));
 			ArrayList<BonusMalusValue> bmv = BonusMalusValue.convert(
 					plugin.getMysqlHandler().getFullList(MysqlHandler.Type.BONUSMALUSVALUE, "`id` ASC",
-					"`bonus_malus_name` = ?", bm.getBonusMalusName()));
+					"`player_uuid` = ? AND `bonus_malus_name` = ?", uuid.toString(), bm.getBonusMalusName()));
 			ArrayList<String> vlist = new ArrayList<>();
 			vlist.add(plugin.getYamlHandler().getLang().getString("CmdBoni.BaseValue")
 					.replace("%value%", String.valueOf(d)));
