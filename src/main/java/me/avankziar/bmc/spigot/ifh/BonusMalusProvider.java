@@ -361,69 +361,44 @@ public class BonusMalusProvider implements main.java.me.avankziar.ifh.general.bo
 	
 	public boolean hasBonusMalus(UUID uuid, String bonusMalusName, String server, String world)
 	{
+		boolean boo = false;
 		if(server != null && world == null)
 		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
+			boo = plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
 					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ?"
 					, uuid.toString(), bonusMalusName, server);
-		} else if(server == null && world != null)
-		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `world` = ?"
-					, uuid.toString(), bonusMalusName,  world);
 		} else if(server != null && world != null)
 		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
+			boo = plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
 					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ? AND `world` = ?"
 					, uuid.toString(), bonusMalusName, server, world);
-		} else
-		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonus_malus_name` = ?", uuid.toString(), bonusMalusName);
 		}
+		return boo ? boo : plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
+				"`player_uuid` = ? AND `bonus_malus_name` = ?", uuid.toString(), bonusMalusName);
+	}
+	
+	public boolean hasBonusMalus(UUID uuid, String conditionName, String internreason)
+	{
+		return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
+				"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ?",
+				uuid.toString(), conditionName, internreason);
 	}
 	
 	public boolean hasBonusMalus(UUID uuid, String bonusMalusName, String internReason, String server, String world)
 	{
+		boolean boo = false;
 		if(internReason != null && server != null && world != null)
 		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
+			boo = plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
 					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ? AND `server` = ? AND `world` = ?"
 					, uuid.toString(), bonusMalusName, internReason, server, world);
-		} else if(internReason != null && server == null && world == null)
-		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ?"
-					, uuid.toString(), bonusMalusName, internReason);
-		} else if(internReason == null && server != null && world == null)
-		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ?"
-					, uuid.toString(), bonusMalusName, server);
-		} else if(internReason == null && server == null && world != null)
-		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `world` = ?"
-					, uuid.toString(), bonusMalusName, world);
 		} else if(internReason != null && server != null && world == null)
 		{
 			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
 					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ? AND `server` = ?"
 					, uuid.toString(), bonusMalusName, internReason, server);
-		} else if(internReason != null && server == null && world != null)
-		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ? AND `world` = ?"
-					, uuid.toString(), bonusMalusName, internReason, world);
-		} else if(internReason == null && server != null && world != null)
-		{
-			return plugin.getMysqlHandler().exist(MysqlHandler.Type.BONUSMALUSVALUE,
-					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `server` = ? AND `world` = ?"
-					, uuid.toString(), bonusMalusName, server, world);
-		} else
-		{
-			return hasBonusMalus(uuid, bonusMalusName);
 		}
+		return boo ? boo : hasBonusMalus(uuid, internReason, bonusMalusName);
 	}
 	
 	public double getLastBaseValue(final UUID uuid, final double baseValue, final String bonusMalusName, String server, String world)

@@ -18,8 +18,8 @@ import main.java.me.avankziar.bmc.spigot.assistance.TimeHandler;
 import main.java.me.avankziar.bmc.spigot.cmd.BMCCmdExecutor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
-import main.java.me.avankziar.bmc.spigot.conditionbonusmalus.Bypass;
 import main.java.me.avankziar.bmc.spigot.conditionbonusmalus.Bypass.Permission;
+import main.java.me.avankziar.bmc.spigot.conditionbonusmalus.ConditionBonusMalus;
 import main.java.me.avankziar.bmc.spigot.database.MysqlHandler;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalus;
 import main.java.me.avankziar.bmc.spigot.objects.BonusMalusValue;
@@ -62,7 +62,7 @@ public class ARGBoni extends ArgumentModule
 		String othername = player.getName();
 		if(args.length >= 3)
 		{
-			if(!player.hasPermission(Bypass.get(Permission.OTHERPLAYER)))
+			if(!ConditionBonusMalus.hasPermission(player, Permission.OTHERPLAYER))
 			{
 				player.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("NoPermission")));
 				return;

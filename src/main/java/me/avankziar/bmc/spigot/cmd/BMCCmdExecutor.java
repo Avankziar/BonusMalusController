@@ -11,12 +11,12 @@ import org.bukkit.entity.Player;
 
 import main.java.me.avankziar.bmc.general.ChatApi;
 import main.java.me.avankziar.bmc.spigot.BMC;
-import main.java.me.avankziar.bmc.spigot.assistance.MatchApi;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentModule;
 import main.java.me.avankziar.bmc.spigot.cmdtree.BaseConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.CommandConstructor;
 import main.java.me.avankziar.bmc.spigot.conditionbonusmalus.ConditionBonusMalus;
+import main.java.me.avankziar.ifh.general.math.MatchPrimitiveDataTypes;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -48,9 +48,9 @@ public class BMCCmdExecutor implements CommandExecutor
 				return false;
 			}
 			Player player = (Player) sender;
-			if(MatchApi.isInteger(args[0]))
+			if(MatchPrimitiveDataTypes.isInteger(args[0]))
 			{
-				if(!player.hasPermission(cc.getPermission()))
+				if(!ConditionBonusMalus.hasPermission(player, cc))
 				{
 					///Du hast dafür keine Rechte!
 					player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
@@ -67,7 +67,7 @@ public class BMCCmdExecutor implements CommandExecutor
 				return false;
 			}
 			Player player = (Player) sender;
-			if(!player.hasPermission(cc.getPermission()))
+			if(!ConditionBonusMalus.hasPermission(player, cc))
 			{
 				///Du hast dafür keine Rechte!
 				player.spigot().sendMessage(ChatApi.tctl(plugin.getYamlHandler().getLang().getString("NoPermission")));
@@ -163,7 +163,7 @@ public class BMCCmdExecutor implements CommandExecutor
 		{
 			if(count >= start && count <= end)
 			{
-				if(player.hasPermission(bc.getPermission()))
+				if(ConditionBonusMalus.hasPermission(player, bc))
 				{
 					sendInfo(player, bc);
 				}

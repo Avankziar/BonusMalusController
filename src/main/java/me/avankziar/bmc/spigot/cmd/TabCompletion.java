@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import main.java.me.avankziar.bmc.spigot.BMC;
 import main.java.me.avankziar.bmc.spigot.cmdtree.ArgumentConstructor;
 import main.java.me.avankziar.bmc.spigot.cmdtree.CommandConstructor;
+import main.java.me.avankziar.bmc.spigot.conditionbonusmalus.ConditionBonusMalus;
 
 public class TabCompletion implements TabCompleter
 {	
@@ -163,7 +164,7 @@ public class TabCompletion implements TabCompleter
 		{
 			if(ac != null)
 			{
-				if(player.hasPermission(ac.getPermission()))
+				if(ConditionBonusMalus.hasPermission(player, ac))
 				{
 					returnlist.add(ac.getName());
 				}
@@ -182,7 +183,7 @@ public class TabCompletion implements TabCompleter
 				debug(player, "arg: "+arg+" | ac: "+ac.getName());
 				if(ac.getName().toLowerCase().startsWith(arg.toLowerCase()))
 				{
-					if(player.hasPermission(ac.getPermission()))
+					if(ConditionBonusMalus.hasPermission(player, ac))
 					{
 						returnlist.add(ac.getName());
 					}

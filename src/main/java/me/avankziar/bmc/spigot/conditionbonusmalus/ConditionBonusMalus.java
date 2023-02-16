@@ -100,7 +100,7 @@ public class ConditionBonusMalus
 			}
 			if(BaseConstructor.getPlugin().getYamlHandler().getConfig().getBoolean("Condition.ConditionOverrulePermission", false))
 			{
-				if((t > 0 && t > f))
+				if(t > 0 && t > f)
 				{
 					return true;
 				}
