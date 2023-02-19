@@ -28,7 +28,11 @@ public class ARGRemove extends ArgumentModule
 	{
 		String bonusmalus = args[1];
 		String othername = args[2];
-		String reason = "";
+		String reason = "/";
+		if(args.length >= 4)
+		{
+			reason = args[3];
+		}
 		if(!plugin.getBonusMalus().isRegistered(bonusmalus))
 		{
 			sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdAdd.IsNotRegistered")));
@@ -41,23 +45,21 @@ public class ARGRemove extends ArgumentModule
 			return;
 		}
 		final UUID uuid = other.getUniqueId();
-		for (int i = 3; i < args.length; i++) 
-        {
-			reason += args[i];
-			if(i < (args.length-1))
-			{
-				reason += " ";
-			}
-        }
-		if(reason.isBlank())
+		int count = 0;
+		if(reason.equals("/"))
 		{
-			reason = "/";
+			count = plugin.getMysqlHandler().getCount(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`player_uuid` = ? AND `bonus_malus_name` = ?", uuid.toString(), bonusmalus);
+			plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`player_uuid` = ? AND `bonus_malus_name` = ?", uuid.toString(), bonusmalus);
+		} else
+		{
+			count = plugin.getMysqlHandler().getCount(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ?", uuid.toString(), bonusmalus, reason);
+			plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
+					"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ?", uuid.toString(), bonusmalus, reason);
 		}
-		final int count = plugin.getMysqlHandler().getCount(MysqlHandler.Type.BONUSMALUSVALUE,
-				"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ?", uuid.toString(), bonusmalus, reason);
-		plugin.getMysqlHandler().deleteData(MysqlHandler.Type.BONUSMALUSVALUE,
-				"`player_uuid` = ? AND `bonus_malus_name` = ? AND `intern_reason` = ?", uuid.toString(), bonusmalus, reason);
-		plugin.getBonusMalus().remove(uuid, bonusmalus, reason);
+		plugin.getBonusMalus().update();
 		sender.sendMessage(ChatApi.tl(plugin.getYamlHandler().getLang().getString("CmdRemove.Remove")
 				.replace("%bm%", bonusmalus)
 				.replace("%player%", othername)

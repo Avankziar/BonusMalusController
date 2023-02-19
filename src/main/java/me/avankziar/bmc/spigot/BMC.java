@@ -169,7 +169,7 @@ public class BMC extends JavaPlugin
 		new ARGBoni(boni);
 		ArgumentConstructor registered = new ArgumentConstructor(CommandExecuteType.BMC_REGISTERED, "bmc_registered", 0, 0, 1, false, null);
 		new ARGRegistered(registered);
-		ArgumentConstructor remove = new ArgumentConstructor(CommandExecuteType.BMC_REMOVE, "bmc_remove", 0, 2, 999, true, null);
+		ArgumentConstructor remove = new ArgumentConstructor(CommandExecuteType.BMC_REMOVE, "bmc_remove", 0, 2, 3, true, null);
 		new ARGRemove(remove);
 		
 		CommandConstructor bmc = new CommandConstructor(CommandExecuteType.BMC, "bmc", true,
